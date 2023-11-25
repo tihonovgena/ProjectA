@@ -35,6 +35,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Camera")
 	USpringArmComponent* CameraSpringArm;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Camera")
+	UArrowComponent* CameraDirection;
 #pragma endregion 
 
 #pragma region PlayerMovement

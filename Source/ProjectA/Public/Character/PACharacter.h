@@ -24,11 +24,14 @@ public:
 	virtual void Tick(float DeltaTime) override;
 #pragma region Movement
 protected:
-	void RotateMeshToDirection() const;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Rotation")
-	bool EnableRotateToDirection = false;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Rotation")
-	float RotationInterpSpeed = 10.0f;
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Movement")
+	bool IsMoving();
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Movement")
+	float GetCharacterSpeed();
+	
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Movement")
+	float GetMovementDegreesDirection();
 #pragma endregion
 	
 };
