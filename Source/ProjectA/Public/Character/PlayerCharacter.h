@@ -6,6 +6,7 @@
 #include "Character/PACharacter.h"
 #include "PlayerCharacter.generated.h"
 
+class USpringArmComponent;
 DECLARE_LOG_CATEGORY_EXTERN(PlayerCharacter, Display, All);
 
 class UBaseInputConfigAsset;
@@ -23,15 +24,20 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Component")
-	UCameraComponent* PlayerCamera;
-
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	
+#pragma region Camera
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Camera")
+	UCameraComponent* PlayerCamera;
 
-#pragma region Player Actions
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Camera")
+	USpringArmComponent* CameraSpringArm;
+#pragma endregion 
+
+#pragma region PlayerMovement
 protected:
 	UFUNCTION(BlueprintCallable)
 	void Move(const FInputActionValue& Value);

@@ -7,6 +7,7 @@
 #include "Camera/CameraComponent.h"
 #include "Input/BaseInputConfigAsset.h"
 #include "InputMappingContext.h"
+#include "GameFramework/SpringArmComponent.h"
 
 DEFINE_LOG_CATEGORY(PlayerCharacter);
 
@@ -15,9 +16,12 @@ APlayerCharacter::APlayerCharacter()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	
+	EnableRotateToDirection = true;
+
+	CameraSpringArm = CreateDefaultSubobject<USpringArmComponent>("CameraSpringArm");
+	CameraSpringArm->SetupAttachment(GetRootComponent());
 	PlayerCamera = CreateDefaultSubobject<UCameraComponent>("PlayerCamera");
-	PlayerCamera->SetupAttachment(GetRootComponent());
+	PlayerCamera->SetupAttachment(CameraSpringArm);
 }
 
 // Called when the game starts or when spawned
@@ -39,12 +43,12 @@ void APlayerCharacter::Move(const FInputActionValue& Value)
 	const FVector2D MoveValue = Value.Get<FVector2D>();
 	if (MoveValue.Y != 0.0f)
 	{
-		AddMovementInput(FVector(1,0,0), MoveValue.Y);
+		AddMovementInput(GetActorForwardVector(), MoveValue.Y);
 	}
 
 	if (MoveValue.X != 0.0f)
 	{
-		AddMovementInput(FVector(0,1,0), MoveValue.X);
+		AddMovementInput(GetActorRightVector(), MoveValue.X);
 	}
 	
 }

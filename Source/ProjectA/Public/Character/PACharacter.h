@@ -22,5 +22,13 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+#pragma region Movement
+protected:
+	void RotateMeshToDirection() const;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Rotation")
+	bool EnableRotateToDirection = false;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Rotation")
+	float RotationInterpSpeed = 10.0f;
+#pragma endregion
 	
 };
