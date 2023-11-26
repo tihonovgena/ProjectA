@@ -68,7 +68,6 @@ void APlayerCharacter::Move(const FInputActionValue& Value)
 	if (MoveValue.Y != 0.0f)
 	{
 		AddMovementInput(CameraDirection->GetForwardVector(), MoveValue.Y);
-		UE_LOG(LogTemp, Display, TEXT("%f"), CameraDirection->GetForwardVector().GetSafeNormal() );
 	}
 
 	if (MoveValue.X != 0.0f)
