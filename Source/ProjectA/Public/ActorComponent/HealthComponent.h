@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "HealthComponent.generated.h"
 
+DECLARE_LOG_CATEGORY_EXTERN(HealthComponent, Display, All);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class PROJECTA_API UHealthComponent : public UActorComponent
@@ -25,8 +26,14 @@ protected:
 
 private:
 	UPROPERTY()
+	AActor* ComponentOwner;
+	
+	UPROPERTY()
 	float Health = 0.0f;
 	
 	UPROPERTY(EditDefaultsOnly, Category="Health")
 	float MaxHealth = 100.f;
+
+	UFUNCTION()
+	void OnTakeAnyDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType,AController* InstigatedBy, AActor* DamageCauser);
 };

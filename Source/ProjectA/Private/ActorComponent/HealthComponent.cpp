@@ -2,6 +2,7 @@
 
 
 #include "ActorComponent/HealthComponent.h"
+DEFINE_LOG_CATEGORY(HealthComponent)
 
 // Sets default values for this component's properties
 UHealthComponent::UHealthComponent()
@@ -23,9 +24,23 @@ float UHealthComponent::GetMaxHealth() const
 void UHealthComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	Health = MaxHealth;
 
+	Health = MaxHealth;
+	
+	ComponentOwner = GetOwner();
+	if(ComponentOwner)
+	{
+		ComponentOwner->OnTakeAnyDamage.AddUniqueDynamic(this, &UHealthComponent::OnTakeAnyDamage);
+	}
+}
+
+void UHealthComponent::OnTakeAnyDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType,
+	AController* InstigatedBy, AActor* DamageCauser)
+{
+	Health -= Damage;
+	
+	const FString OwnerName = ComponentOwner->GetName();
+	UE_LOG(HealthComponent, Display, TEXT("%s take %f damage"), *OwnerName, Damage)
 }
 
 

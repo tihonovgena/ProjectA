@@ -11,6 +11,7 @@
 #include "Components/ArrowComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Engine/DamageEvents.h"
 
 DEFINE_LOG_CATEGORY(PlayerCharacter);
 
@@ -21,8 +22,10 @@ APlayerCharacter::APlayerCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 	
 	GetCharacterMovement()->bOrientRotationToMovement = true;
+	bUseControllerRotationYaw = false;
 
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
+	check(HealthComponent);
 	
 	CameraSpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraSpringArm"));
 	if (CameraSpringArm)
@@ -57,6 +60,9 @@ void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	//For test
+	TakeDamage(0.1f, FDamageEvent {}, Controller, this);
+	
 }
 
 void APlayerCharacter::Move(const FInputActionValue& Value)
@@ -75,8 +81,6 @@ void APlayerCharacter::Move(const FInputActionValue& Value)
 	
 }
 
-
-// Called to bind functionality to input
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	SetupMappingContext();
