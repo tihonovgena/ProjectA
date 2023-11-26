@@ -53,6 +53,10 @@ void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	check(HealthComponent)
+	OnHealthChanged(HealthComponent->GetHealth());
+	HealthComponent->OnDeath.AddUObject(this, &APlayerCharacter::OnDeath);
+	HealthComponent->OnHealthChanged.AddUObject(this, &APlayerCharacter::OnHealthChanged);
 }
 
 // Called every frame
@@ -81,6 +85,17 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 {
 	SetupMappingContext();
 	BindInputActions(PlayerInputComponent);
+}
+
+void APlayerCharacter::OnDeath()
+{
+	GetCharacterMovement()->DisableMovement();
+	SetLifeSpan(5.0f);
+}
+
+void APlayerCharacter::OnHealthChanged(float Health)
+{
+	UE_LOG(PlayerCharacter, Display, TEXT("Player %s has new health - %f"), *GetName(), Health);
 }
 
 void APlayerCharacter::SetupMappingContext() const

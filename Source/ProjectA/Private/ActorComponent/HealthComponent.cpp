@@ -23,26 +23,41 @@ float UHealthComponent::GetMaxHealth() const
 	return MaxHealth;
 }
 
+bool UHealthComponent::IsDead()
+{
+	return Health <= 0.0f;
+}
+
 void UHealthComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	Health = MaxHealth;
+	SetNewHealth(MaxHealth);
 	
 	ComponentOwner = GetOwner();
-	if(ComponentOwner)
-	{
-		ComponentOwner->OnTakeAnyDamage.AddUniqueDynamic(this, &UHealthComponent::OnTakeAnyDamage);
-	}
+	check(ComponentOwner);
+	ComponentOwner->OnTakeAnyDamage.AddUniqueDynamic(this, &UHealthComponent::OnTakeAnyDamage);
+	
+}
+
+void UHealthComponent::SetNewHealth(const float NewHealth)
+{
+	Health = NewHealth;
+	OnHealthChanged.Broadcast(Health);
 }
 
 void UHealthComponent::OnTakeAnyDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType,
-	AController* InstigatedBy, AActor* DamageCauser)
+                                       AController* InstigatedBy, AActor* DamageCauser)
 {
-	Health -= Damage;
+	if (IsDead() || Damage <= 0.0f)
+	{
+		return;
+	}
+
+	const float NewHealth = FMath::Clamp(Health - Damage, 0.0, MaxHealth);
+	SetNewHealth(NewHealth);
 	
-	const FString OwnerName = ComponentOwner->GetName();
-	UE_LOG(HealthComponent, Display, TEXT("%s take %f damage"), *OwnerName, Damage)
+	UE_LOG(HealthComponent, Display, TEXT("%s take %f damage"), *ComponentOwner->GetName(), Damage)
 
 	if (DamageType && DamageType->IsA<UPADamageType>())
 	{
@@ -62,6 +77,12 @@ void UHealthComponent::OnTakeAnyDamage(AActor* DamagedActor, float Damage, const
 		
 		default: ;
 		}
+	}
+
+	if (IsDead())
+	{
+		UE_LOG(HealthComponent, Display, TEXT("Player %s is dead"), *ComponentOwner->GetName());
+		OnDeath.Broadcast();
 	}
 }
 

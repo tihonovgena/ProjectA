@@ -69,6 +69,9 @@ protected:
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Health", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UHealthComponent> HealthComponent;
+	
+	void OnDeath();
+	void OnHealthChanged(float Health);
 #pragma endregion 
 	
 };
