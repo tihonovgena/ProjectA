@@ -59,9 +59,6 @@ void APlayerCharacter::BeginPlay()
 void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	//For test
-	TakeDamage(0.1f, FDamageEvent {}, Controller, this);
 	
 }
 
