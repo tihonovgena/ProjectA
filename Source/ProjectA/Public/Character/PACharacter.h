@@ -23,7 +23,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 #pragma region Movement
-protected:
+public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Movement")
 	bool IsMoving();
 

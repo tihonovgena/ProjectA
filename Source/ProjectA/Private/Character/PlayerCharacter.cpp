@@ -7,6 +7,7 @@
 #include "Camera/CameraComponent.h"
 #include "Input/BaseInputConfigAsset.h"
 #include "InputMappingContext.h"
+#include "ActorComponent/HealthComponent.h"
 #include "Components/ArrowComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -20,16 +21,28 @@ APlayerCharacter::APlayerCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 	
 	GetCharacterMovement()->bOrientRotationToMovement = true;
+
+	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
 	
-	CameraSpringArm = CreateDefaultSubobject<USpringArmComponent>("CameraSpringArm");
-	CameraSpringArm->SetupAttachment(GetRootComponent());
-	CameraSpringArm->bInheritYaw = false;
+	CameraSpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraSpringArm"));
+	if (CameraSpringArm)
+	{
+		CameraSpringArm->SetupAttachment(GetRootComponent());
+		CameraSpringArm->bInheritYaw = false;
+	}
 	
-	PlayerCamera = CreateDefaultSubobject<UCameraComponent>("PlayerCamera");
-	PlayerCamera->SetupAttachment(CameraSpringArm);
+	PlayerCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("PlayerCamera"));
+	if (PlayerCamera)
+	{
+		PlayerCamera->SetupAttachment(CameraSpringArm);
+	}
 	
-	CameraDirection = CreateDefaultSubobject<UArrowComponent>("CameraDirection");
-	CameraDirection->SetupAttachment(CameraSpringArm);
+	CameraDirection = CreateDefaultSubobject<UArrowComponent>(TEXT("CameraDirection"));
+	if (CameraDirection)
+	{
+		CameraDirection->SetupAttachment(CameraSpringArm);
+	}
+	
 }
 
 // Called when the game starts or when spawned

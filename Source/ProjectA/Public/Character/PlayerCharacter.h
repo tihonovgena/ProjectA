@@ -6,6 +6,7 @@
 #include "Character/PACharacter.h"
 #include "PlayerCharacter.generated.h"
 
+class UHealthComponent;
 struct FInputActionValue;
 class USpringArmComponent;
 DECLARE_LOG_CATEGORY_EXTERN(PlayerCharacter, Display, All);
@@ -30,15 +31,15 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	
 #pragma region Camera
-protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Camera")
-	UCameraComponent* PlayerCamera;
+private:
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Camera", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UCameraComponent> PlayerCamera;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Camera")
-	USpringArmComponent* CameraSpringArm;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Camera", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<USpringArmComponent> CameraSpringArm;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Camera")
-	UArrowComponent* CameraDirection;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Camera", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UArrowComponent> CameraDirection;
 #pragma endregion 
 
 #pragma region PlayerMovement
@@ -49,17 +50,25 @@ protected:
 #pragma endregion
 	
 #pragma region Input
-protected:
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+private:
 	void SetupMappingContext() const;
 	void BindInputActions(UInputComponent* PlayerInputComponent);
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly,Category="Input")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly,Category="Input", meta = (AllowPrivateAccess = "true"))
 	TSoftObjectPtr<UInputMappingContext> InputMapping;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Input")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Input", meta = (AllowPrivateAccess = "true"))
 	TSoftObjectPtr<UBaseInputConfigAsset> InputActionAssets;
-#pragma endregion 
 	
+protected:
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	
+#pragma endregion 
+
+#pragma region Health
+private:
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Health", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UHealthComponent> HealthComponent;
+#pragma endregion 
 	
 };
