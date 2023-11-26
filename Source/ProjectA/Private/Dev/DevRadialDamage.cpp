@@ -34,6 +34,6 @@ void ADevRadialDamage::Tick(float DeltaTime)
 
 	DrawDebugSphere(GetWorld(),GetActorLocation(),SphereRadius,20, SphereColor);
 
-	UGameplayStatics::ApplyRadialDamage(GetWorld(), TickDamage, GetActorLocation(), SphereRadius, nullptr, {}, this, nullptr, bDoFullDamage);
+	UGameplayStatics::ApplyRadialDamage(GetWorld(), TickDamage, GetActorLocation(), SphereRadius, DamageType, {}, this, nullptr, bDoFullDamage);
 }
 

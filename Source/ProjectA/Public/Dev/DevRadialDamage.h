@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "DevRadialDamage.generated.h"
 
+class UPADamageType;
 class USphereComponent;
 
 UCLASS()
@@ -20,8 +21,6 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	
-
 
 public:	
 	// Called every frame
@@ -35,6 +34,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float TickDamage = 0.1f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<UDamageType> DamageType;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bDoFullDamage = false;
