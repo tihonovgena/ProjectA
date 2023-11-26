@@ -20,11 +20,14 @@ APlayerCharacter::APlayerCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 	
 	GetCharacterMovement()->bOrientRotationToMovement = true;
+	
 	CameraSpringArm = CreateDefaultSubobject<USpringArmComponent>("CameraSpringArm");
 	CameraSpringArm->SetupAttachment(GetRootComponent());
 	CameraSpringArm->bInheritYaw = false;
+	
 	PlayerCamera = CreateDefaultSubobject<UCameraComponent>("PlayerCamera");
 	PlayerCamera->SetupAttachment(CameraSpringArm);
+	
 	CameraDirection = CreateDefaultSubobject<UArrowComponent>("CameraDirection");
 	CameraDirection->SetupAttachment(CameraSpringArm);
 }
@@ -69,11 +72,8 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 void APlayerCharacter::SetupMappingContext() const
 {
-	if (InputMapping.IsNull())
-	{
-		UE_LOG(PlayerCharacter, Warning, TEXT("Setup mapping context is fail - InputMapping is null."));
-		return;
-	}
+	const UInputMappingContext* InputMappingContext = InputMapping.LoadSynchronous();
+	check(InputMappingContext)
 	
 	const APlayerController* PlayerController = Cast<APlayerController>(GetController());
 	if (!PlayerController)
@@ -96,17 +96,13 @@ void APlayerCharacter::SetupMappingContext() const
 		return;
 	}
 	
-	LocalInputSubsystem->AddMappingContext(InputMapping.LoadSynchronous(), 0);
+	LocalInputSubsystem->AddMappingContext(InputMappingContext, 0);
 }
 
 void APlayerCharacter::BindInputActions(UInputComponent* PlayerInputComponent)
 {
 	const UBaseInputConfigAsset* ActionAsset = InputActionAssets.LoadSynchronous();
-	if (!ActionAsset)
-	{
-		UE_LOG(PlayerCharacter, Warning, TEXT("Bind input action fail - InputActionAssets is null"));
-		return;
-	}
+	check(ActionAsset);
 	
 	UEnhancedInputComponent* PlayerEnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent);
 	if (!PlayerEnhancedInputComponent)

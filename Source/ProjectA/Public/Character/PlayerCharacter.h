@@ -6,6 +6,7 @@
 #include "Character/PACharacter.h"
 #include "PlayerCharacter.generated.h"
 
+struct FInputActionValue;
 class USpringArmComponent;
 DECLARE_LOG_CATEGORY_EXTERN(PlayerCharacter, Display, All);
 
