@@ -3,6 +3,8 @@
 
 #include "ActorComponent/HealthComponent.h"
 #include "Gameplay/Damage/PADamageType.h"
+#include "Engine/World.h"
+#include "TimerManager.h"
 
 DEFINE_LOG_CATEGORY(HealthComponent)
 
@@ -25,7 +27,7 @@ float UHealthComponent::GetMaxHealth() const
 
 bool UHealthComponent::IsDead()
 {
-	return Health <= 0.0f;
+	return FMath::IsNearlyZero(Health);
 }
 
 void UHealthComponent::BeginPlay()
@@ -42,8 +44,38 @@ void UHealthComponent::BeginPlay()
 
 void UHealthComponent::SetNewHealth(const float NewHealth)
 {
-	Health = NewHealth;
+	Health = FMath::Clamp(NewHealth, 0.0f, MaxHealth);
 	OnHealthChanged.Broadcast(Health);
+}
+
+void UHealthComponent::StartAutoHealTimer()
+{
+	StopAutoHealTimer();
+	if (GetWorld())
+	{
+		GetWorld()->GetTimerManager().SetTimer
+		(AutoHealTimer, this, &UHealthComponent::StartAutoHeal, AutoHealFrequency, true, AutoHealDelayStart);
+	}
+
+}
+
+void UHealthComponent::StopAutoHealTimer()
+{
+	if (AutoHealTimer.IsValid() && GetWorld())
+	{
+		GetWorld()->GetTimerManager().ClearTimer(AutoHealTimer);
+	}
+	
+}
+
+void UHealthComponent::StartAutoHeal()
+{
+	SetNewHealth(Health + AutoHealAmount);
+	if (FMath::IsNearlyEqual(Health ,MaxHealth))
+	{
+		StopAutoHealTimer();
+	}
+	
 }
 
 void UHealthComponent::OnTakeAnyDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType,
@@ -83,6 +115,10 @@ void UHealthComponent::OnTakeAnyDamage(AActor* DamagedActor, float Damage, const
 	{
 		UE_LOG(HealthComponent, Display, TEXT("Player %s is dead"), *ComponentOwner->GetName());
 		OnDeath.Broadcast();
+	}
+	else if (bEnableAutoHeal)
+	{
+		StartAutoHealTimer();
 	}
 }
 

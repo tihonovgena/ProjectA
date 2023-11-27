@@ -22,30 +22,63 @@ public:
 	FOnDeath OnDeath;
 	FOnHealthChanged OnHealthChanged;
 	
-	UFUNCTION(BlueprintCallable, Category="Health")
-	float GetHealth() const;
-
-	UFUNCTION(BlueprintCallable, Category="Health")
-	float GetMaxHealth() const;
-
-	UFUNCTION(BlueprintCallable, Category="Health")
-	bool IsDead();
-	
-protected:
-	virtual void BeginPlay() override;
-
 private:
 	UPROPERTY()
 	AActor* ComponentOwner;
-	
-	UPROPERTY()
+
+protected:
+	virtual void BeginPlay() override;
+
+#pragma region HealthGeneral
+public:
+	UFUNCTION(BlueprintCallable, Category = "Health")
+	float GetHealth() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Health")
+	float GetMaxHealth() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Health")
+	bool IsDead();
+
+private:
 	float Health = 0.0f;
-	
-	UPROPERTY(EditDefaultsOnly, Category="Health")
-	float MaxHealth = 100.f;
 
 	void SetNewHealth(const float NewHealth);
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Health")
+	float MaxHealth = 100.f;
 
+#pragma endregion 
+
+#pragma region AutoHeal
+private:
+	UPROPERTY(EditDefaultsOnly, Category = "AutoHeal")
+	bool bEnableAutoHeal = true;
+
+	UPROPERTY(EditDefaultsOnly, Category = "AutoHeal", meta = (EditCondition = "bEnableAutoHeal"))
+	float AutoHealAmount = 1.f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "AutoHeal", meta = (EditCondition = "bEnableAutoHeal"))
+	float AutoHealFrequency = 0.5f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "AutoHeal", meta = (EditCondition = "bEnableAutoHeal"))
+	float AutoHealDelayStart = 2.f;
+	
+	FTimerHandle AutoHealTimer;
+
+	void StartAutoHealTimer();
+	void StopAutoHealTimer();
+	void StartAutoHeal();
+
+#pragma endregion
+
+#pragma region Damage
+private:
 	UFUNCTION()
-	void OnTakeAnyDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType,AController* InstigatedBy, AActor* DamageCauser);
+	void OnTakeAnyDamage
+	(AActor* DamagedActor, float Damage, const UDamageType* DamageType,
+		AController* InstigatedBy, AActor* DamageCauser);
+
+#pragma endregion
+	
 };

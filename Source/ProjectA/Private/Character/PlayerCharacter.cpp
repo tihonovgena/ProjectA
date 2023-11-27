@@ -11,7 +11,6 @@
 #include "Components/ArrowComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "Engine/DamageEvents.h"
 
 DEFINE_LOG_CATEGORY(PlayerCharacter);
 
