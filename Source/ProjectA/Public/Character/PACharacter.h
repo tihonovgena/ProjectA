@@ -6,22 +6,22 @@
 #include "GameFramework/Character.h"
 #include "PACharacter.generated.h"
 
+class APAWeapon;
+
 UCLASS()
 class PROJECTA_API APACharacter : public ACharacter
 {
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
 	APACharacter();
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	
 public:	
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	
 #pragma region Movement
 public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Movement")
@@ -33,5 +33,14 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Movement")
 	float GetMovementDegreesDirection();
 #pragma endregion
+
+#pragma region Weapon
+protected:
+	UPROPERTY(EditDefaultsOnly, Category="Weapon")
+	TSubclassOf<APAWeapon> WeaponClass;
+
+	virtual void SpawnWeapon();
+	
+#pragma endregion 
 	
 };

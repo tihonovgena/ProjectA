@@ -24,10 +24,9 @@ public:
 	APlayerCharacter();
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	
 public:	
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	
 #pragma region Camera
@@ -73,6 +72,12 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Health", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UHealthComponent> HealthComponent;
 
+#pragma endregion
+
+#pragma region Weapon
+protected:
+	virtual void SpawnWeapon() override;
+	
 #pragma endregion 
 	
 };

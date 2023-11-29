@@ -2,10 +2,6 @@
 
 
 #include "Character/PACharacter.h"
-#include "EnhancedInputComponent.h"
-#include "EnhancedInputSubsystems.h"
-#include "Camera/CameraComponent.h"
-#include "GameFramework/PawnMovementComponent.h"
 
 // Sets default values
 APACharacter::APACharacter()
@@ -20,6 +16,10 @@ void APACharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+}
+
+void APACharacter::SpawnWeapon()
+{
 }
 
 // Called every frame

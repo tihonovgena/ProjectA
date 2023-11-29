@@ -11,6 +11,7 @@
 #include "Components/ArrowComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Weapon/PAWeapon.h"
 
 DEFINE_LOG_CATEGORY(PlayerCharacter);
 
@@ -56,6 +57,8 @@ void APlayerCharacter::BeginPlay()
 	OnHealthChanged(HealthComponent->GetHealth());
 	HealthComponent->OnDeath.AddUObject(this, &APlayerCharacter::OnDeath);
 	HealthComponent->OnHealthChanged.AddUObject(this, &APlayerCharacter::OnHealthChanged);
+
+	SpawnWeapon();
 }
 
 // Called every frame
@@ -95,6 +98,21 @@ void APlayerCharacter::OnDeath()
 void APlayerCharacter::OnHealthChanged(float Health)
 {
 	UE_LOG(PlayerCharacter, Display, TEXT("Player %s has new health - %f"), *GetName(), Health);
+}
+
+void APlayerCharacter::SpawnWeapon()
+{
+	Super::SpawnWeapon();
+
+	if (WeaponClass && GetWorld())
+	{
+		const auto Weapon = GetWorld()->SpawnActor<APAWeapon>(WeaponClass);
+		if (Weapon)
+		{
+			const FAttachmentTransformRules AttachmentRules = FAttachmentTransformRules(EAttachmentRule::SnapToTarget, false);
+			Weapon->AttachToComponent(GetMesh(), AttachmentRules, FName("WeaponSocketR"));
+		}
+	}
 }
 
 void APlayerCharacter::SetupMappingContext() const
