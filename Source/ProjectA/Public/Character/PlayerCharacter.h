@@ -6,11 +6,11 @@
 #include "Character/PACharacter.h"
 #include "PlayerCharacter.generated.h"
 
-class UHealthComponent;
-struct FInputActionValue;
-class USpringArmComponent;
 DECLARE_LOG_CATEGORY_EXTERN(PlayerCharacter, Display, All);
 
+struct FInputActionValue;
+class UHealthComponent;
+class USpringArmComponent;
 class UBaseInputConfigAsset;
 class UCameraComponent;
 class UInputMappingContext;
@@ -67,11 +67,12 @@ protected:
 
 #pragma region Health
 private:
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Health", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UHealthComponent> HealthComponent;
-	
 	void OnDeath();
 	void OnHealthChanged(float Health);
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Health", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UHealthComponent> HealthComponent;
+
 #pragma endregion 
 	
 };

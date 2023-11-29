@@ -8,8 +8,8 @@
 
 DECLARE_LOG_CATEGORY_EXTERN(HealthComponent, Display, All);
 
-DECLARE_MULTICAST_DELEGATE(FOnDeath)
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnHealthChanged, float Health)
+DECLARE_MULTICAST_DELEGATE(FOnDeathSignature)
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnHealthChangedSignature, float Health)
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class PROJECTA_API UHealthComponent : public UActorComponent
@@ -18,9 +18,9 @@ class PROJECTA_API UHealthComponent : public UActorComponent
 
 public:	
 	UHealthComponent();
-
-	FOnDeath OnDeath;
-	FOnHealthChanged OnHealthChanged;
+	
+	FOnDeathSignature OnDeath;
+	FOnHealthChangedSignature OnHealthChanged;
 	
 private:
 	UPROPERTY()
