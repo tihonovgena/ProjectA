@@ -6,8 +6,6 @@
 #include "GameFramework/Character.h"
 #include "PACharacter.generated.h"
 
-class APAWeapon;
-
 UCLASS()
 class PROJECTA_API APACharacter : public ACharacter
 {
@@ -33,14 +31,5 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Movement")
 	float GetMovementDegreesDirection();
 #pragma endregion
-
-#pragma region Weapon
-protected:
-	UPROPERTY(EditDefaultsOnly, Category="Weapon")
-	TSubclassOf<APAWeapon> WeaponClass;
-
-	virtual void SpawnWeapon();
-	
-#pragma endregion 
 	
 };

@@ -14,6 +14,7 @@ class USpringArmComponent;
 class UBaseInputConfigAsset;
 class UCameraComponent;
 class UInputMappingContext;
+class UWeaponComponent;
 
 UCLASS()
 class PROJECTA_API APlayerCharacter : public APACharacter
@@ -75,9 +76,8 @@ private:
 #pragma endregion
 
 #pragma region Weapon
-protected:
-	virtual void SpawnWeapon() override;
-	
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Weapon", meta = (AllowPrivateAccess = "true"))
+	UWeaponComponent* WeaponComponent;
 #pragma endregion 
 	
 };

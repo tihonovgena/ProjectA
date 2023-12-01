@@ -18,9 +18,6 @@ void APACharacter::BeginPlay()
 	
 }
 
-void APACharacter::SpawnWeapon()
-{
-}
 
 // Called every frame
 void APACharacter::Tick(float DeltaTime)

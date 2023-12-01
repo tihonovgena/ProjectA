@@ -11,21 +11,19 @@
 #include "Components/ArrowComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "Weapon/PAWeapon.h"
+#include "ActorComponent/WeaponComponent.h"
 
 DEFINE_LOG_CATEGORY(PlayerCharacter);
 
-// Sets default values
 APlayerCharacter::APlayerCharacter()
 {
-	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	bUseControllerRotationYaw = false;
 
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
-	check(HealthComponent);
+	WeaponComponent = CreateDefaultSubobject<UWeaponComponent>(TEXT("WeaponComponent"));
 	
 	CameraSpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraSpringArm"));
 	if (CameraSpringArm)
@@ -48,17 +46,16 @@ APlayerCharacter::APlayerCharacter()
 	
 }
 
-// Called when the game starts or when spawned
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	check(HealthComponent)
+	check(HealthComponent);
+	check(WeaponComponent);
+	
 	OnHealthChanged(HealthComponent->GetHealth());
 	HealthComponent->OnDeath.AddUObject(this, &APlayerCharacter::OnDeath);
 	HealthComponent->OnHealthChanged.AddUObject(this, &APlayerCharacter::OnHealthChanged);
-
-	SpawnWeapon();
 }
 
 // Called every frame
@@ -100,20 +97,6 @@ void APlayerCharacter::OnHealthChanged(float Health)
 	UE_LOG(PlayerCharacter, Display, TEXT("Player %s has new health - %f"), *GetName(), Health);
 }
 
-void APlayerCharacter::SpawnWeapon()
-{
-	Super::SpawnWeapon();
-
-	if (WeaponClass && GetWorld())
-	{
-		const auto Weapon = GetWorld()->SpawnActor<APAWeapon>(WeaponClass);
-		if (Weapon)
-		{
-			const FAttachmentTransformRules AttachmentRules = FAttachmentTransformRules(EAttachmentRule::SnapToTarget, false);
-			Weapon->AttachToComponent(GetMesh(), AttachmentRules, FName("WeaponSocketR"));
-		}
-	}
-}
 
 void APlayerCharacter::SetupMappingContext() const
 {
