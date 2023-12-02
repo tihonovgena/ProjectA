@@ -15,6 +15,11 @@ AWeaponSkeletalMesh::AWeaponSkeletalMesh()
 	}
 }
 
+FTransform AWeaponSkeletalMesh::GetShotSocketTransform()
+{
+	return WeaponMesh->GetSocketTransform(ShotSocketName);
+}
+
 void AWeaponSkeletalMesh::BeginPlay()
 {
 	Super::BeginPlay();

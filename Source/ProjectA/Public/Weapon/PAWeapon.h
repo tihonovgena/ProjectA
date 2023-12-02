@@ -13,6 +13,8 @@ class PROJECTA_API APAWeapon : public AActor
 	
 public:	
 	APAWeapon();
+	
+	virtual FTransform GetShotSocketTransform();
 
 protected:
 	virtual void BeginPlay() override;

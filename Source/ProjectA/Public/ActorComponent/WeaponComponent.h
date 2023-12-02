@@ -29,10 +29,17 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, Category="Weapon")
 	float FireRate = 0.5f;
+
+	UPROPERTY(EditDefaultsOnly, Category="Weapon")
+	float ShotDistance = 1000.0f;
+
+	UPROPERTY(BlueprintReadWrite, Category="Weapon")
+	APAWeapon* Weapon;
 	
 	virtual void SpawnWeapon();
 	virtual USceneComponent* GetOwnerMesh() const;
-	virtual void Fire();
+	virtual void Shoot();
+	virtual void MakeShot();
 
 public:	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;

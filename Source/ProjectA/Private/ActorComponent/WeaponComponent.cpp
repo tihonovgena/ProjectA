@@ -2,11 +2,10 @@
 
 
 #include "ActorComponent/WeaponComponent.h"
-
-#include "SkeletalDebugRendering.h"
 #include "Weapon/PAWeapon.h"
 #include "GameFramework/Character.h"
 #include "TimerManager.h"
+#include "DrawDebugHelpers.h"
 
 DEFINE_LOG_CATEGORY(WeaponComponent)
 
@@ -22,11 +21,12 @@ void UWeaponComponent::BeginPlay()
 	Super::BeginPlay();
 
 	SpawnWeapon();
+	check(Weapon);
 
 	if (GetWorld())
 	{
 		GetWorld()->GetTimerManager().SetTimer
-		(FireTimer, this, &UWeaponComponent::Fire, FireRate, true);
+		(FireTimer, this, &UWeaponComponent::Shoot, FireRate, true);
 	}
 	
 }
@@ -42,7 +42,7 @@ void UWeaponComponent::SpawnWeapon()
 {
 	if (!GetWorld() || !GetOwnerMesh() || !WeaponClass) return;
 	
-	const auto Weapon = GetWorld()->SpawnActor<APAWeapon>(WeaponClass);
+	Weapon = GetWorld()->SpawnActor<APAWeapon>(WeaponClass);
 	if (!Weapon) return;
 	const FAttachmentTransformRules AttachmentRules = FAttachmentTransformRules(EAttachmentRule::SnapToTarget, false);
 	Weapon->AttachToComponent(GetOwnerMesh(), AttachmentRules, AttachSocketName);
@@ -57,8 +57,19 @@ USceneComponent* UWeaponComponent::GetOwnerMesh() const
 	return  Character->GetMesh();
 }
 
-void UWeaponComponent::Fire()
+void UWeaponComponent::Shoot()
 {
-	UE_LOG(WeaponComponent, Display, TEXT("Fire!"));
+	UE_LOG(WeaponComponent, Display, TEXT("Shoot"));
+	MakeShot();
+}
+
+void UWeaponComponent::MakeShot()
+{
+	if(!GetWorld() || !Weapon) return;
+
+	const FVector StartTrace = Weapon->GetShotSocketTransform().GetLocation();
+	const FVector TraceDirection = Weapon->GetShotSocketTransform().GetRotation().GetForwardVector();
+	const FVector EndTrace = StartTrace + (TraceDirection * ShotDistance);
+	DrawDebugLine(GetWorld(), StartTrace, EndTrace, FColor::Red, false, 2.0f, 0, 2.0f);
 }
 

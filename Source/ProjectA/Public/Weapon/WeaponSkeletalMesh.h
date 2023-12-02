@@ -16,9 +16,15 @@ class PROJECTA_API AWeaponSkeletalMesh : public APAWeapon
 public:
 	AWeaponSkeletalMesh();
 
+	virtual FTransform GetShotSocketTransform() override;
+
 protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category="Mesh")
 	USkeletalMeshComponent* WeaponMesh;
+
+	UPROPERTY(EditDefaultsOnly, Category="Weapon")
+	FName ShotSocketName = "ShotSocket";
+	
 };
