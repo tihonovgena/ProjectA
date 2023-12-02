@@ -6,7 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "WeaponComponent.generated.h"
 
-DECLARE_LOG_CATEGORY_EXTERN(WeaponComponent, Display, All)
+DECLARE_LOG_CATEGORY_EXTERN(WeaponComponent, Display, All);
 
 class APAWeapon;
 
@@ -18,35 +18,49 @@ class PROJECTA_API UWeaponComponent : public UActorComponent
 public:	
 	UWeaponComponent();
 
+	AController* GetOwnerController();
+	
 protected:
 	virtual void BeginPlay() override;
-	
-	UPROPERTY(EditDefaultsOnly, Category="Weapon")
-	TSubclassOf<APAWeapon> WeaponClass;
-	
-	UPROPERTY(EditDefaultsOnly, Category="Weapon")
-	FName AttachSocketName;
-	
+
+	//Temporary, moved to weapon asset
 	UPROPERTY(EditDefaultsOnly, Category="Weapon")
 	float FireRate = 0.5f;
 
 	UPROPERTY(EditDefaultsOnly, Category="Weapon")
 	float ShotDistance = 1000.0f;
 
+	AActor* ComponentOwner;
+
+	
+#pragma region Weapon
+protected:
+	virtual void SpawnWeapon();
+	virtual USceneComponent* GetOwnerMesh() const;
+
+	UPROPERTY(EditDefaultsOnly, Category="Weapon")
+	TSubclassOf<APAWeapon> WeaponClass;
+	
 	UPROPERTY(BlueprintReadWrite, Category="Weapon")
 	APAWeapon* Weapon;
 	
-	virtual void SpawnWeapon();
-	virtual USceneComponent* GetOwnerMesh() const;
+	UPROPERTY(EditDefaultsOnly, Category="Weapon")
+	FName AttachWeaponSocket;
+	
+#pragma endregion 
+	
+#pragma region Shoot
+protected:
 	virtual void Shoot();
 	virtual void MakeShot();
-	bool GetTraceData(FVector& StartTrace, FVector& EndTrace);
+	
 	bool MakeShotTrace(FHitResult& HitResult, FVector& StartTrace, FVector& EndTrace);
-
-public:	
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	
+private:
+	bool GetTraceData(FVector& StartTrace, FVector& EndTrace);
+#pragma endregion 
 
 private:
-	FTimerHandle FireTimer;
+	FTimerHandle ShootTimer;
 	
 };
