@@ -9,11 +9,6 @@ APAWeapon::APAWeapon()
 
 }
 
-FTransform APAWeapon::GetShotSocketTransform()
-{
-	return FTransform();
-}
-
 void APAWeapon::BeginPlay()
 {
 	Super::BeginPlay();

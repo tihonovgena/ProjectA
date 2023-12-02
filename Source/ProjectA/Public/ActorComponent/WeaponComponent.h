@@ -27,9 +27,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="Weapon")
 	float FireRate = 0.5f;
 
-	UPROPERTY(EditDefaultsOnly, Category="Weapon")
-	float ShotDistance = 1000.0f;
-
 	AActor* ComponentOwner;
 
 	
@@ -37,6 +34,7 @@ protected:
 protected:
 	virtual void SpawnWeapon();
 	virtual USceneComponent* GetOwnerMesh() const;
+	void StartShootTimer();
 
 	UPROPERTY(EditDefaultsOnly, Category="Weapon")
 	TSubclassOf<APAWeapon> WeaponClass;
@@ -47,17 +45,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="Weapon")
 	FName AttachWeaponSocket;
 	
-#pragma endregion 
-	
-#pragma region Shoot
-protected:
-	virtual void Shoot();
-	virtual void MakeShot();
-	
-	bool MakeShotTrace(FHitResult& HitResult, FVector& StartTrace, FVector& EndTrace);
-	
-private:
-	bool GetTraceData(FVector& StartTrace, FVector& EndTrace);
 #pragma endregion 
 
 private:

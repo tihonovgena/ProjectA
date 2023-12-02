@@ -6,9 +6,7 @@
 #include "GameFramework/Character.h"
 #include "TimerManager.h"
 #include "DrawDebugHelpers.h"
-#include "Engine/DamageEvents.h"
-
-#define COLLISION_WEAPON ECC_GameTraceChannel1
+#include "Weapon/SkeletalGun.h"
 
 DEFINE_LOG_CATEGORY(WeaponComponent);
 
@@ -42,11 +40,7 @@ void UWeaponComponent::BeginPlay()
 	SpawnWeapon();
 	check(Weapon);
 
-	if (GetWorld())
-	{
-		GetWorld()->GetTimerManager().SetTimer
-		(ShootTimer, this, &UWeaponComponent::Shoot, FireRate, true);
-	}
+	StartShootTimer();
 	
 }
 
@@ -58,8 +52,20 @@ void UWeaponComponent::SpawnWeapon()
 	if (!Weapon) return;
 	const FAttachmentTransformRules AttachmentRules = FAttachmentTransformRules(EAttachmentRule::SnapToTarget, false);
 	Weapon->AttachToComponent(GetOwnerMesh(), AttachmentRules, AttachWeaponSocket);
+	Weapon->SetOwner(ComponentOwner);
 	
 }
+
+void UWeaponComponent::StartShootTimer()
+{
+	ASkeletalGun* GunWeapon = Cast<ASkeletalGun>(Weapon);
+	if (!GunWeapon || !GetWorld()) return;
+	
+	GetWorld()->GetTimerManager().SetTimer
+	(ShootTimer, GunWeapon, &ASkeletalGun::Shoot, FireRate, true);
+	
+}
+
 
 USceneComponent* UWeaponComponent::GetOwnerMesh() const
 {
@@ -68,57 +74,3 @@ USceneComponent* UWeaponComponent::GetOwnerMesh() const
 	if (!Character) return nullptr;
 	return  Character->GetMesh();
 }
-
-void UWeaponComponent::Shoot()
-{
-	MakeShot();
-	
-}
-
-void UWeaponComponent::MakeShot()
-{
-	if(!GetWorld()) return;
-
-	FVector StartTrace;
-	FVector EndTrace;
-	FHitResult HitResult;
-	MakeShotTrace(HitResult, StartTrace, EndTrace);
-
-	if (HitResult.bBlockingHit)
-	{
-		DrawDebugLine(GetWorld(), StartTrace, HitResult.ImpactPoint, FColor::Red, false, 2.0f, 0, 2.0f);
-		DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 25.0f, 12, FColor::Red, false, 5.0f,0, 1.0f);
-		
-		AActor* HitActor = HitResult.HitObjectHandle.FetchActor();
-		if (HitActor)
-		{
-			HitActor->TakeDamage(10.0f, FDamageEvent{},GetOwnerController(), ComponentOwner);
-			UE_LOG(WeaponComponent, Display, TEXT("%s got the shot"), *HitActor->GetName());
-		}
-	}
-	else
-	{
-		DrawDebugLine(GetWorld(), StartTrace, EndTrace, FColor::Red, false, 2.0f, 0, 2.0f);
-	}
-	
-}
-
-bool UWeaponComponent::GetTraceData(FVector& StartTrace, FVector& EndTrace)
-{
-	if(!Weapon) return false;
-	
-	StartTrace = Weapon->GetShotSocketTransform().GetLocation();
-	const FVector TraceDirection = Weapon->GetShotSocketTransform().GetRotation().GetForwardVector();
-	EndTrace = StartTrace + (TraceDirection * ShotDistance);
-	return true;
-	
-}
-
-bool UWeaponComponent::MakeShotTrace(FHitResult& HitResult, FVector& StartTrace, FVector& EndTrace)
-{
-	if(!GetWorld()) return false;
-	GetTraceData(StartTrace, EndTrace);
-	GetWorld()->LineTraceSingleByChannel(HitResult, StartTrace, EndTrace, COLLISION_WEAPON);
-	return true;
-}
-
