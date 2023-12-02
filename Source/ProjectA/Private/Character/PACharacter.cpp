@@ -3,6 +3,8 @@
 
 #include "Character/PACharacter.h"
 
+#include "Components/CapsuleComponent.h"
+
 // Sets default values
 APACharacter::APACharacter()
 {
@@ -16,6 +18,11 @@ void APACharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+}
+
+void APACharacter::OnDeath()
+{
+	GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECR_Ignore);
 }
 
 

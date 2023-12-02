@@ -67,7 +67,7 @@ protected:
 
 #pragma region Health
 private:
-	void OnDeath();
+	virtual void OnDeath() override;
 	void OnHealthChanged(float Health);
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Health", meta = (AllowPrivateAccess = "true"))

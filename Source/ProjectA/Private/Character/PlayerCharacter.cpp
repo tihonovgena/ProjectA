@@ -88,6 +88,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 void APlayerCharacter::OnDeath()
 {
+	Super::OnDeath();
 	GetCharacterMovement()->DisableMovement();
 	SetLifeSpan(5.0f);
 }

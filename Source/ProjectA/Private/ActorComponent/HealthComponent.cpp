@@ -115,11 +115,13 @@ void UHealthComponent::OnTakeAnyDamage(AActor* DamagedActor, float Damage, const
 	{
 		UE_LOG(HealthComponent, Display, TEXT("Player %s is dead"), *ComponentOwner->GetName());
 		OnDeath.Broadcast();
+		StopAutoHealTimer();
 	}
 	else if (bEnableAutoHeal)
 	{
 		StartAutoHealTimer();
 	}
+	
 }
 
 
