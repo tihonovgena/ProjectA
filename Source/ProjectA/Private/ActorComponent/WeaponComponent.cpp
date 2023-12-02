@@ -59,8 +59,8 @@ USceneComponent* UWeaponComponent::GetOwnerMesh() const
 
 void UWeaponComponent::Shoot()
 {
-	UE_LOG(WeaponComponent, Display, TEXT("Shoot"));
 	MakeShot();
+	
 }
 
 void UWeaponComponent::MakeShot()
@@ -70,6 +70,20 @@ void UWeaponComponent::MakeShot()
 	const FVector StartTrace = Weapon->GetShotSocketTransform().GetLocation();
 	const FVector TraceDirection = Weapon->GetShotSocketTransform().GetRotation().GetForwardVector();
 	const FVector EndTrace = StartTrace + (TraceDirection * ShotDistance);
-	DrawDebugLine(GetWorld(), StartTrace, EndTrace, FColor::Red, false, 2.0f, 0, 2.0f);
+
+	FHitResult HitResult;
+	GetWorld()->LineTraceSingleByChannel(HitResult, StartTrace, EndTrace, ECC_Visibility);
+
+	if (HitResult.bBlockingHit)
+	{
+		DrawDebugLine(GetWorld(), StartTrace, HitResult.ImpactPoint, FColor::Red, false, 2.0f, 0, 2.0f);
+		DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 25.0f, 12, FColor::Red, false, 5.0f,0, 1.0f);
+		UE_LOG(WeaponComponent, Display, TEXT("%s got the shot"), *HitResult.HitObjectHandle.GetFName().ToString());
+	}
+	else
+	{
+		DrawDebugLine(GetWorld(), StartTrace, EndTrace, FColor::Red, false, 2.0f, 0, 2.0f);
+	}
+	
 }
 
