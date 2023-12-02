@@ -65,14 +65,12 @@ void UWeaponComponent::Shoot()
 
 void UWeaponComponent::MakeShot()
 {
-	if(!GetWorld() || !Weapon) return;
+	if(!GetWorld()) return;
 
-	const FVector StartTrace = Weapon->GetShotSocketTransform().GetLocation();
-	const FVector TraceDirection = Weapon->GetShotSocketTransform().GetRotation().GetForwardVector();
-	const FVector EndTrace = StartTrace + (TraceDirection * ShotDistance);
-
+	FVector StartTrace;
+	FVector EndTrace;
 	FHitResult HitResult;
-	GetWorld()->LineTraceSingleByChannel(HitResult, StartTrace, EndTrace, ECC_Visibility);
+	MakeShotTrace(HitResult, StartTrace, EndTrace);
 
 	if (HitResult.bBlockingHit)
 	{
@@ -85,5 +83,24 @@ void UWeaponComponent::MakeShot()
 		DrawDebugLine(GetWorld(), StartTrace, EndTrace, FColor::Red, false, 2.0f, 0, 2.0f);
 	}
 	
+}
+
+bool UWeaponComponent::GetTraceData(FVector& StartTrace, FVector& EndTrace)
+{
+	if(!Weapon) return false;
+	
+	StartTrace = Weapon->GetShotSocketTransform().GetLocation();
+	const FVector TraceDirection = Weapon->GetShotSocketTransform().GetRotation().GetForwardVector();
+	EndTrace = StartTrace + (TraceDirection * ShotDistance);
+	return true;
+	
+}
+
+bool UWeaponComponent::MakeShotTrace(FHitResult& HitResult, FVector& StartTrace, FVector& EndTrace)
+{
+	if(!GetWorld()) return false;
+	GetTraceData(StartTrace, EndTrace);
+	GetWorld()->LineTraceSingleByChannel(HitResult, StartTrace, EndTrace, ECC_Visibility);
+	return true;
 }
 

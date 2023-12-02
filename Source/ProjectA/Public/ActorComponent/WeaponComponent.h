@@ -40,6 +40,8 @@ protected:
 	virtual USceneComponent* GetOwnerMesh() const;
 	virtual void Shoot();
 	virtual void MakeShot();
+	bool GetTraceData(FVector& StartTrace, FVector& EndTrace);
+	bool MakeShotTrace(FHitResult& HitResult, FVector& StartTrace, FVector& EndTrace);
 
 public:	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
