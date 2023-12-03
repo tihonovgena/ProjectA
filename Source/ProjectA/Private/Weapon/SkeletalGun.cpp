@@ -28,7 +28,7 @@ AController* ASkeletalGun::GetOwnerController()
 {
 	if (!GetOwner()) return nullptr;
 	APawn* Pawn = Cast<APawn>(GetOwner());
-	if (!Pawn) return nullptr;
+	if (!IsValid(Pawn)) return nullptr;
 	return Pawn->GetController();
 	
 }
@@ -36,6 +36,7 @@ AController* ASkeletalGun::GetOwnerController()
 void ASkeletalGun::BeginPlay()
 {
 	Super::BeginPlay();
+	check(WeaponMesh);
 }
 
 void ASkeletalGun::Shoot()
@@ -70,7 +71,7 @@ void ASkeletalGun::MakeShot()
 void ASkeletalGun::MakeDamage(FHitResult& HitResult)
 {
 	AActor* DamagedActor = HitResult.GetActor();
-	if (DamagedActor)
+	if (IsValid(DamagedActor))
 	{
 		DamagedActor->TakeDamage(10.0f, FDamageEvent(),GetOwnerController(), this);
 	}

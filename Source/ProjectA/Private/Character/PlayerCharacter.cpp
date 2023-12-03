@@ -12,6 +12,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "ActorComponent/WeaponComponent.h"
+#include "ActorComponent/EnemyDetectorComponent.h"
+#include "ActorComponent/LookAtTargetComponent.h"
 
 DEFINE_LOG_CATEGORY(PlayerCharacter);
 
@@ -24,6 +26,8 @@ APlayerCharacter::APlayerCharacter()
 
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
 	WeaponComponent = CreateDefaultSubobject<UWeaponComponent>(TEXT("WeaponComponent"));
+	EnemyDetectorComponent = CreateDefaultSubobject<UEnemyDetectorComponent>(TEXT("EnemyDetector"));
+	LookAtTargetComponent = CreateDefaultSubobject<ULookAtTargetComponent>(TEXT("LookAtTarget"));
 	
 	CameraSpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraSpringArm"));
 	if (CameraSpringArm)
@@ -52,17 +56,54 @@ void APlayerCharacter::BeginPlay()
 	
 	check(HealthComponent);
 	check(WeaponComponent);
+	check(EnemyDetectorComponent);
+	check(LookAtTargetComponent);
 	
 	OnHealthChanged(HealthComponent->GetHealth());
 	HealthComponent->OnDeath.AddUObject(this, &APlayerCharacter::OnDeath);
 	HealthComponent->OnHealthChanged.AddUObject(this, &APlayerCharacter::OnHealthChanged);
+
+	EnemyDetectorComponent->OnChangedNearestEnemy.AddUObject(this, &APlayerCharacter::OnChangedNearestEnemy);
+	
 }
 
-// Called every frame
+APawn* APlayerCharacter::GetNearestEnemy()
+{
+	return EnemyDetectorComponent->GetNearestEnemy();
+}
+
+void APlayerCharacter::OnChangedNearestEnemy(APawn* NewEnemy)
+{
+	LookAtTargetComponent->SetTarget(NewEnemy);
+
+	// Sets controller Yaw in depended of rotation mode, if there are no any enemies will use orient to movement direction
+	if (IsValid(NewEnemy))
+	{
+		SetMovementOrientationMode(EMovementOrientationMode::ToController);
+		UE_LOG(PlayerCharacter, Display, TEXT("Got new enemy %s"), *NewEnemy->GetName());
+	}
+	else
+	{
+		SetMovementOrientationMode(EMovementOrientationMode::ToMovementDirection);
+		UE_LOG(PlayerCharacter, Display, TEXT("Does not have any enemy"));
+	}
+}
+
 void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
+}
+
+bool APlayerCharacter::CanBeDetected()
+{
+	return !HealthComponent->IsDead();
+}
+
+void APlayerCharacter::MakeRotateToTarget(FRotator Rotator)
+{
+	if (!GetController()) return;
+	GetController()->SetControlRotation(Rotator);
 }
 
 void APlayerCharacter::Move(const FInputActionValue& Value)
@@ -80,6 +121,22 @@ void APlayerCharacter::Move(const FInputActionValue& Value)
 	
 }
 
+void APlayerCharacter::SetMovementOrientationMode(EMovementOrientationMode Mode)
+{
+	switch (Mode)
+	{
+	case EMovementOrientationMode::ToController:
+		bUseControllerRotationYaw = true;
+		GetCharacterMovement()->bOrientRotationToMovement = false;
+		break;
+	
+	case EMovementOrientationMode::ToMovementDirection:
+		bUseControllerRotationYaw = false;
+		GetCharacterMovement()->bOrientRotationToMovement = true;
+		break;
+	}
+}
+
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	SetupMappingContext();
@@ -89,6 +146,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 void APlayerCharacter::OnDeath()
 {
 	Super::OnDeath();
+	EnemyDetectorComponent->Deactivate();
 	GetCharacterMovement()->DisableMovement();
 	SetLifeSpan(5.0f);
 }
@@ -97,7 +155,6 @@ void APlayerCharacter::OnHealthChanged(float Health)
 {
 	UE_LOG(PlayerCharacter, Display, TEXT("Player %s has new health - %f"), *GetName(), Health);
 }
-
 
 void APlayerCharacter::SetupMappingContext() const
 {

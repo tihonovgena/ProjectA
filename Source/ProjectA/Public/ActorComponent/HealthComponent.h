@@ -45,7 +45,7 @@ private:
 
 	void SetNewHealth(const float NewHealth);
 	
-	UPROPERTY(EditDefaultsOnly, Category = "Health")
+	UPROPERTY(EditDefaultsOnly, Category = "Health", meta = (ClampMin = "0.0"))
 	float MaxHealth = 100.f;
 
 #pragma endregion 
@@ -55,13 +55,13 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "AutoHeal")
 	bool bEnableAutoHeal = true;
 
-	UPROPERTY(EditDefaultsOnly, Category = "AutoHeal", meta = (EditCondition = "bEnableAutoHeal"))
+	UPROPERTY(EditDefaultsOnly, Category = "AutoHeal", meta = (ClampMin = "0.0", EditCondition = "bEnableAutoHeal"))
 	float AutoHealAmount = 1.f;
 
-	UPROPERTY(EditDefaultsOnly, Category = "AutoHeal", meta = (EditCondition = "bEnableAutoHeal"))
+	UPROPERTY(EditDefaultsOnly, Category = "AutoHeal", meta = (ClampMin = "0.0", EditCondition = "bEnableAutoHeal"))
 	float AutoHealFrequency = 0.5f;
 
-	UPROPERTY(EditDefaultsOnly, Category = "AutoHeal", meta = (EditCondition = "bEnableAutoHeal"))
+	UPROPERTY(EditDefaultsOnly, Category = "AutoHeal", meta = (ClampMin = "0.0", EditCondition = "bEnableAutoHeal"))
 	float AutoHealDelayStart = 2.f;
 	
 	FTimerHandle AutoHealTimer;

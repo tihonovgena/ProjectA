@@ -27,6 +27,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="Weapon")
 	float FireRate = 0.5f;
 
+	UPROPERTY()
 	AActor* ComponentOwner;
 
 	
@@ -40,7 +41,7 @@ protected:
 	TSubclassOf<APAWeapon> WeaponClass;
 	
 	UPROPERTY(BlueprintReadWrite, Category="Weapon")
-	APAWeapon* Weapon;
+	TObjectPtr<APAWeapon> Weapon;
 	
 	UPROPERTY(EditDefaultsOnly, Category="Weapon")
 	FName AttachWeaponSocket;
