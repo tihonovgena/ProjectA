@@ -3,7 +3,7 @@
 
 #include "ActorComponent/LookAtTargetComponent.h"
 #include "TimerManager.h"
-#include "Interface/LookAtEnemyInterface.h"
+#include "Interface/LookAtTargetInterface.h"
 #include "Kismet/KismetMathLibrary.h"
 
 ULookAtTargetComponent::ULookAtTargetComponent()
@@ -15,6 +15,17 @@ ULookAtTargetComponent::ULookAtTargetComponent()
 void ULookAtTargetComponent::SetTarget(AActor* NewTarget)
 {
 	Target = NewTarget;
+}
+
+FRotator ULookAtTargetComponent::GetRotatorBetweenTarget()
+{
+	if (IsValid(ComponentOwner) && IsValid(Target))
+	{
+		return ComponentOwner->GetActorRotation() - RotatorToTarget;	
+	}
+	
+	return FRotator::ZeroRotator;
+	
 }
 
 void ULookAtTargetComponent::BeginPlay()
@@ -37,28 +48,32 @@ void ULookAtTargetComponent::LookAtTarget()
 {
 	if (IsValid(Target) && IsValid(ComponentOwner))
 	{
-		float YawDegrees;
-		float PitchDegrees;
-		CalculateAnglesToTarget(YawDegrees, PitchDegrees);
-		MakeRotate(FRotator(PitchDegrees, YawDegrees,0 ));
+		RotatorToTarget = CalculateRotatorToTarget();
 		
+		if (FMath::Abs(GetRotatorBetweenTarget().Yaw) >= YawAngleToRotate)
+		{
+			const FRotator InterpRotatorToTarget = FMath::RInterpTo(ComponentOwner->GetActorRotation(), RotatorToTarget, UpdateFrequency, InterpRotationSpeed);
+			MakeRotate(InterpRotatorToTarget);
+		}
+	}
+	else
+	{
+		RotatorToTarget = FRotator::ZeroRotator;
 	}
 	
 }
 
-void ULookAtTargetComponent::CalculateAnglesToTarget(float& YawDegrees, float& PitchDegrees)
+FRotator ULookAtTargetComponent::CalculateRotatorToTarget()
 {
 	const FVector TargetLocation = Target->GetActorLocation();
 	const FVector OwnerLocation = ComponentOwner->GetActorLocation();
 	const FRotator Rotator = UKismetMathLibrary::FindLookAtRotation(OwnerLocation, TargetLocation);
-	YawDegrees = Rotator.Yaw;
-	PitchDegrees= Rotator.Pitch;
-	
+	return FRotator(Rotator.Pitch, Rotator.Yaw,0 );
 }
 
 void ULookAtTargetComponent::MakeRotate(FRotator Rotator)
 {
-	ILookAtEnemyInterface* LookAtEnemyInterface = Cast<ILookAtEnemyInterface>(ComponentOwner);
+	ILookAtTargetInterface* LookAtEnemyInterface = Cast<ILookAtTargetInterface>(ComponentOwner);
 	if (LookAtEnemyInterface)
 	{
 		LookAtEnemyInterface->MakeRotateToTarget(Rotator);

@@ -4,8 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "Interface/EnemyDetectorInterface.h"
 #include "PACharacter.generated.h"
+
+class UHealthComponent;
 
 UCLASS()
 class PROJECTA_API APACharacter : public ACharacter
@@ -17,7 +18,6 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-	virtual void OnDeath();
 	
 public:	
 	virtual void Tick(float DeltaTime) override;
@@ -33,5 +33,14 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Movement")
 	float GetMovementDegreesDirection();
 #pragma endregion
+
+#pragma region Health
+protected:
+	virtual void OnDeath();
+	virtual void OnHealthChanged(float Health);
 	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Health", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UHealthComponent> HealthComponent;
+
+#pragma endregion	
 };

@@ -4,16 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
-#include "LookAtEnemyInterface.generated.h"
+#include "LookAtTargetInterface.generated.h"
 
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
-class ULookAtEnemyInterface : public UInterface
+class ULookAtTargetInterface : public UInterface
 {
 	GENERATED_BODY()
 };
 
-class PROJECTA_API ILookAtEnemyInterface
+class PROJECTA_API ILookAtTargetInterface
 {
 	GENERATED_BODY()
 

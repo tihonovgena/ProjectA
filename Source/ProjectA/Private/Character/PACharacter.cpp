@@ -2,18 +2,25 @@
 
 
 #include "Character/PACharacter.h"
-
+#include "ActorComponent/HealthComponent.h"
 #include "Components/CapsuleComponent.h"
 
 APACharacter::APACharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
+
+	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
 	
 }
 
 void APACharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	check(HealthComponent);
+	OnHealthChanged(HealthComponent->GetHealth());
+	HealthComponent->OnDeath.AddUObject(this, &APACharacter::OnDeath);
+	HealthComponent->OnHealthChanged.AddUObject(this, &APACharacter::OnHealthChanged);
 	
 }
 
@@ -22,8 +29,12 @@ void APACharacter::OnDeath()
 	GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECR_Ignore);
 }
 
+void APACharacter::OnHealthChanged(float Health)
+{
+	
+}
 
-// Called every frame
+
 void APACharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);

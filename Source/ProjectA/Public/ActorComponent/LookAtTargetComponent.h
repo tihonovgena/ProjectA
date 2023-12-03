@@ -17,6 +17,9 @@ public:
 
 	void SetTarget(AActor* NewTarget);
 
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "LookAtTarget")
+	FRotator GetRotatorBetweenTarget();
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -29,17 +32,19 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="Update", meta = (ClampMin = "0.0"))
 	float UpdateFrequency = 0.05f;
 
-	UPROPERTY(EditDefaultsOnly, Category="Update", meta = (ClampMin = "0.0"))
-	float StartRotateYawDegrees = 80.f;
-	
-	UPROPERTY(EditDefaultsOnly, Category="Update", meta = (ClampMin = "0.0"))
-	float StartRotatePithDegrees = 80.f;
+	UPROPERTY(EditDefaultsOnly, Category="Rotation", meta = (ClampMin = "0.0"))
+	float YawAngleToRotate = 60.f;
+
+	UPROPERTY(EditDefaultsOnly, Category="Rotation", meta = (ClampMin = "0.0"))
+	float InterpRotationSpeed = 8.0f;
 
 	void LookAtTarget();
 	FTimerHandle UpdaterTimer;
 
 private:
-	void CalculateAnglesToTarget(float& YawDegrees, float& PitchDegrees);
+	FRotator CalculateRotatorToTarget();
 	void MakeRotate(FRotator Rotator);
+
+	FRotator RotatorToTarget;
 		
 };

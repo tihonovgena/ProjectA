@@ -22,9 +22,9 @@ APlayerCharacter::APlayerCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 	
 	GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->bUseControllerDesiredRotation = true;
 	bUseControllerRotationYaw = false;
-
-	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
+	
 	WeaponComponent = CreateDefaultSubobject<UWeaponComponent>(TEXT("WeaponComponent"));
 	EnemyDetectorComponent = CreateDefaultSubobject<UEnemyDetectorComponent>(TEXT("EnemyDetector"));
 	LookAtTargetComponent = CreateDefaultSubobject<ULookAtTargetComponent>(TEXT("LookAtTarget"));
@@ -54,14 +54,9 @@ void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	check(HealthComponent);
 	check(WeaponComponent);
 	check(EnemyDetectorComponent);
 	check(LookAtTargetComponent);
-	
-	OnHealthChanged(HealthComponent->GetHealth());
-	HealthComponent->OnDeath.AddUObject(this, &APlayerCharacter::OnDeath);
-	HealthComponent->OnHealthChanged.AddUObject(this, &APlayerCharacter::OnHealthChanged);
 
 	EnemyDetectorComponent->OnChangedNearestEnemy.AddUObject(this, &APlayerCharacter::OnChangedNearestEnemy);
 	
@@ -93,11 +88,6 @@ void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
-}
-
-bool APlayerCharacter::CanBeDetected()
-{
-	return !HealthComponent->IsDead();
 }
 
 void APlayerCharacter::MakeRotateToTarget(FRotator Rotator)

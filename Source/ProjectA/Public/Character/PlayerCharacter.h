@@ -4,20 +4,20 @@
 
 #include "CoreMinimal.h"
 #include "Character/PACharacter.h"
-#include "Interface/LookAtEnemyInterface.h"
+#include "Interface/LookAtTargetInterface.h"
 #include "PlayerCharacter.generated.h"
 
 class ULookAtTargetComponent;
 class UEnemyDetectorComponent;
-DECLARE_LOG_CATEGORY_EXTERN(PlayerCharacter, Display, All);
-
-struct FInputActionValue;
-class UHealthComponent;
 class USpringArmComponent;
 class UBaseInputConfigAsset;
 class UCameraComponent;
 class UInputMappingContext;
 class UWeaponComponent;
+
+DECLARE_LOG_CATEGORY_EXTERN(PlayerCharacter, Display, All);
+
+struct FInputActionValue;
 
 UENUM()
 enum EMovementOrientationMode
@@ -27,8 +27,7 @@ enum EMovementOrientationMode
 };
 
 UCLASS()
-class PROJECTA_API APlayerCharacter : public APACharacter,
-public IEnemyDetectorInterface, public ILookAtEnemyInterface
+class PROJECTA_API APlayerCharacter : public APACharacter, public ILookAtTargetInterface
 
 {
 	GENERATED_BODY()
@@ -37,9 +36,6 @@ public:
 	APlayerCharacter();
 
 	virtual void Tick(float DeltaTime) override;
-
-	UFUNCTION()
-	virtual bool CanBeDetected() override;
 
 protected:
 	virtual void BeginPlay() override;
@@ -104,19 +100,15 @@ protected:
 #pragma endregion 
 
 #pragma region Health
-private:
+protected:
 	virtual void OnDeath() override;
-	void OnHealthChanged(float Health);
+	virtual void OnHealthChanged(float Health) override;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Health", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UHealthComponent> HealthComponent;
-
 #pragma endregion
 
 #pragma region Weapon
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Weapon", meta = (AllowPrivateAccess = "true"))
 	UWeaponComponent* WeaponComponent;
 #pragma endregion
-
 	
 };
