@@ -13,6 +13,8 @@ class PROJECTA_API APAWeapon : public AActor
 	
 public:	
 	APAWeapon();
+	virtual void StartAttack();
+	virtual void StopAttack();
 
 protected:
 	virtual void BeginPlay() override;

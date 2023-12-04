@@ -39,8 +39,6 @@ void UWeaponComponent::BeginPlay()
 	
 	SpawnWeapon();
 	check(Weapon);
-
-	StartShootTimer();
 	
 }
 
@@ -57,13 +55,15 @@ void UWeaponComponent::SpawnWeapon()
 	
 }
 
-void UWeaponComponent::StartShootTimer()
+void UWeaponComponent::StartAttack()
 {
-	ASkeletalGun* GunWeapon = Cast<ASkeletalGun>(Weapon);
-	if (!IsValid(GunWeapon) || !GetWorld()) return;
+	Weapon->StartAttack();
 	
-	GetWorld()->GetTimerManager().SetTimer
-	(ShootTimer, GunWeapon, &ASkeletalGun::Shoot, FireRate, true);
+}
+
+void UWeaponComponent::StopAttack()
+{
+	Weapon->StopAttack();
 	
 }
 

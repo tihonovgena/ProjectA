@@ -39,10 +39,15 @@ void ASkeletalGun::BeginPlay()
 	check(WeaponMesh);
 }
 
-void ASkeletalGun::Shoot()
+void ASkeletalGun::StartAttack()
 {
-	MakeShot();
-	
+	GetWorldTimerManager().SetTimer
+	(ShootTimer,this, &ASkeletalGun::MakeShot, FireRate, true, -1);
+}
+
+void ASkeletalGun::StopAttack()
+{
+	GetWorldTimerManager().ClearTimer(ShootTimer);
 }
 
 void ASkeletalGun::MakeShot()

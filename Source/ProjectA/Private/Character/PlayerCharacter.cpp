@@ -75,10 +75,12 @@ void APlayerCharacter::OnChangedNearestEnemy(APawn* NewEnemy)
 	if (IsValid(NewEnemy))
 	{
 		SetMovementOrientationMode(EMovementOrientationMode::ToController);
+		WeaponComponent->StartAttack();
 		UE_LOG(PlayerCharacter, Display, TEXT("Got new enemy %s"), *NewEnemy->GetName());
 	}
 	else
 	{
+		WeaponComponent->StopAttack();
 		SetMovementOrientationMode(EMovementOrientationMode::ToMovementDirection);
 		UE_LOG(PlayerCharacter, Display, TEXT("Does not have any enemy"));
 	}

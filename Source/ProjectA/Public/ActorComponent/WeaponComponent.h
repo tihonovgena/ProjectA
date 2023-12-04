@@ -23,19 +23,18 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	//Temporary, moved to weapon asset
-	UPROPERTY(EditDefaultsOnly, Category="Weapon")
-	float FireRate = 0.5f;
-
 	UPROPERTY()
 	AActor* ComponentOwner;
 
 	
 #pragma region Weapon
+public:
+	void StartAttack();
+	void StopAttack();
+	
 protected:
 	virtual void SpawnWeapon();
 	virtual USceneComponent* GetOwnerMesh() const;
-	void StartShootTimer();
 
 	UPROPERTY(EditDefaultsOnly, Category="Weapon")
 	TSubclassOf<APAWeapon> WeaponClass;
@@ -47,8 +46,5 @@ protected:
 	FName AttachWeaponSocket;
 	
 #pragma endregion 
-
-private:
-	FTimerHandle ShootTimer;
 	
 };

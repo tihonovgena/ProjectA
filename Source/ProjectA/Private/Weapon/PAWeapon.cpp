@@ -9,6 +9,16 @@ APAWeapon::APAWeapon()
 
 }
 
+void APAWeapon::StartAttack()
+{
+	
+}
+
+void APAWeapon::StopAttack()
+{
+	
+}
+
 void APAWeapon::BeginPlay()
 {
 	Super::BeginPlay();

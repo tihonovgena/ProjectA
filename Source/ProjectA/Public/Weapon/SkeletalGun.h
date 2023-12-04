@@ -36,9 +36,13 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="Weapon")
 	float ShotDistance = 1000.0f;
 
+	UPROPERTY(EditDefaultsOnly, Category="Weapon")
+	float FireRate = 0.5f;
+
 #pragma region Shoot
 public:
-	virtual void Shoot();
+	virtual void StartAttack() override;
+	virtual void StopAttack() override;
 	
 protected:
 	virtual void MakeShot();
@@ -49,6 +53,9 @@ protected:
 	
 private:
 	bool GetTraceData(FVector& StartTrace, FVector& EndTrace);
+	
+	FTimerHandle ShootTimer;
+	
 #pragma endregion 
 	
 };
