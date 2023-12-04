@@ -3,14 +3,32 @@
 
 #include "Weapon/RifleWeapon.h"
 #include "DrawDebugHelpers.h"
+#include "Weapon/WeaponConfig/RifleWeaponConfig.h"
 
 bool ARifleWeapon::GetTraceData(FVector& StartTrace, FVector& EndTrace)
 {
 	StartTrace = GetShotSocketTransform().GetLocation();
 	const FVector TraceDirection = GetShotSocketTransform().GetRotation().GetForwardVector();
-	EndTrace = StartTrace + (TraceDirection * ShotDistance);
+	EndTrace = StartTrace + (TraceDirection * RifleWeaponConfig->ShotDistance);
 	return true;
 	
+}
+
+void ARifleWeapon::SetWeaponConfig(UBaseWeaponConfig* NewWeaponConfig)
+{
+	//Always put the super call for that method.
+	Super::SetWeaponConfig(NewWeaponConfig);
+	
+	if (NewWeaponConfig)
+	{
+		RifleWeaponConfig = Cast<URifleWeaponConfig>(NewWeaponConfig);
+	}
+}
+
+void ARifleWeapon::BeginPlay()
+{
+	Super::BeginPlay();
+	check(RifleWeaponConfig);
 }
 
 void ARifleWeapon::MakeShot()

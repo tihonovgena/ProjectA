@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "WeaponComponent.generated.h"
 
+class UBaseWeaponConfig;
 DECLARE_LOG_CATEGORY_EXTERN(WeaponComponent, Display, All);
 
 class APAWeapon;
@@ -17,34 +18,29 @@ class PROJECTA_API UWeaponComponent : public UActorComponent
 
 public:	
 	UWeaponComponent();
-
+	
 	AController* GetOwnerController();
-	
-protected:
-	virtual void BeginPlay() override;
-
-	UPROPERTY()
-	AActor* ComponentOwner;
-
-	
-#pragma region Weapon
-public:
 	void StartAttack();
 	void StopAttack();
 	
 protected:
-	virtual void SpawnWeapon();
-	virtual USceneComponent* GetOwnerMesh() const;
+	virtual void BeginPlay() override;
+	void SpawnDefaultWeapon();
+	USceneComponent* GetOwnerMesh() const;
 
-	UPROPERTY(EditDefaultsOnly, Category="Weapon")
-	TSubclassOf<APAWeapon> WeaponClass;
+	UPROPERTY()
+	AActor* ComponentOwner;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	bool bSpawnDefaultWeapon = true;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	UBaseWeaponConfig* DefaultWeaponConfig;
 	
 	UPROPERTY(BlueprintReadWrite, Category="Weapon")
 	TObjectPtr<APAWeapon> Weapon;
-	
-	UPROPERTY(EditDefaultsOnly, Category="Weapon")
-	FName AttachWeaponSocket;
-	
-#pragma endregion 
-	
+
+private:
+	void SpawnWeapon(UBaseWeaponConfig* WeaponConfig);
+
 };

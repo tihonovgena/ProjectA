@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "PAWeapon.generated.h"
 
+class UBaseWeaponConfig;
+
 UCLASS(Abstract)
 class PROJECTA_API APAWeapon : public AActor
 {
@@ -15,6 +17,7 @@ public:
 	APAWeapon();
 	virtual void StartAttack();
 	virtual void StopAttack();
+	virtual void SetWeaponConfig(UBaseWeaponConfig* NewWeaponConfig);
 
 protected:
 	virtual void BeginPlay() override;

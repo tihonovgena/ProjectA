@@ -4,6 +4,7 @@
 #include "Weapon/SkeletalGun.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Engine/DamageEvents.h"
+#include "Weapon/WeaponConfig/GunWeaponConfig.h"
 
 DEFINE_LOG_CATEGORY(WeaponGun)
 
@@ -18,9 +19,20 @@ ASkeletalGun::ASkeletalGun()
 	}
 }
 
+void ASkeletalGun::SetWeaponConfig(UBaseWeaponConfig* NewWeaponConfig)
+{
+	//Always put the super call for that method.
+	Super::SetWeaponConfig(NewWeaponConfig);
+	
+	if (NewWeaponConfig)
+	{
+		GunWeaponConfig = Cast<UGunWeaponConfig>(NewWeaponConfig);
+	}
+}
+
 FTransform ASkeletalGun::GetShotSocketTransform()
 {
-	return WeaponMesh->GetSocketTransform(ShotSocketName);
+	return WeaponMesh->GetSocketTransform(GunWeaponConfig->ShotSocketName);
 }
 
 AController* ASkeletalGun::GetOwnerController()
@@ -36,12 +48,13 @@ void ASkeletalGun::BeginPlay()
 {
 	Super::BeginPlay();
 	check(WeaponMesh);
+	check(GunWeaponConfig);
 }
 
 void ASkeletalGun::StartAttack()
 {
 	GetWorldTimerManager().SetTimer
-	(ShootTimer,this, &ASkeletalGun::MakeShot, FireRate, true, -1);
+	(ShootTimer,this, &ASkeletalGun::MakeShot, GunWeaponConfig->FireRate, true, -1);
 }
 
 void ASkeletalGun::StopAttack()

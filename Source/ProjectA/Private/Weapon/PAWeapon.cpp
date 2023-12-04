@@ -19,6 +19,11 @@ void APAWeapon::StopAttack()
 	
 }
 
+void APAWeapon::SetWeaponConfig(UBaseWeaponConfig* NewWeaponConfig)
+{
+	//Always put the super call for that method.
+}
+
 void APAWeapon::BeginPlay()
 {
 	Super::BeginPlay();

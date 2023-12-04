@@ -8,6 +8,7 @@
 
 #define COLLISION_WEAPON ECC_GameTraceChannel1
 
+class UGunWeaponConfig;
 DECLARE_LOG_CATEGORY_EXTERN(WeaponGun, Display, All);
 
 class USkeletalMeshComponent;
@@ -20,6 +21,7 @@ class PROJECTA_API ASkeletalGun : public APAWeapon
 public:
 	ASkeletalGun();
 
+	virtual void SetWeaponConfig(UBaseWeaponConfig* NewWeaponConfig) override;
 	virtual FTransform GetShotSocketTransform();
 
 	AController* GetOwnerController();
@@ -31,15 +33,6 @@ protected:
 	USkeletalMeshComponent* WeaponMesh;
 
 
-	//Put to weapon data asset
-	UPROPERTY(EditDefaultsOnly, Category="Weapon")
-	FName ShotSocketName = "ShotSocket";
-
-	UPROPERTY(EditDefaultsOnly, Category="Weapon")
-	float ShotDistance = 1000.0f;
-
-	UPROPERTY(EditDefaultsOnly, Category="Weapon")
-	float FireRate = 0.5f;
 
 #pragma region Shoot
 public:
@@ -53,6 +46,8 @@ protected:
 private:
 	FTimerHandle ShootTimer;
 	
+	UPROPERTY()
+	const UGunWeaponConfig* GunWeaponConfig;
 #pragma endregion 
 	
 };

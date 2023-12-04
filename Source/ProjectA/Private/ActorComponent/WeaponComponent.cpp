@@ -6,7 +6,8 @@
 #include "GameFramework/Character.h"
 #include "TimerManager.h"
 #include "DrawDebugHelpers.h"
-#include "Weapon/SkeletalGun.h"
+#include "Kismet/GameplayStatics.h"
+#include "Weapon/WeaponConfig/BaseWeaponConfig.h"
 
 DEFINE_LOG_CATEGORY(WeaponComponent);
 
@@ -37,34 +38,54 @@ void UWeaponComponent::BeginPlay()
 	ComponentOwner = GetOwner();
 	check(ComponentOwner)
 	
-	SpawnWeapon();
-	check(Weapon);
+	if (bSpawnDefaultWeapon)
+	{
+		SpawnDefaultWeapon();
+	}
 	
 }
 
-void UWeaponComponent::SpawnWeapon()
+void UWeaponComponent::SpawnDefaultWeapon()
 {
-	if (!GetWorld() || !GetOwnerMesh() || !WeaponClass) return;
+	SpawnWeapon(DefaultWeaponConfig);
+}
+
+void UWeaponComponent::SpawnWeapon(UBaseWeaponConfig* WeaponConfig)
+{
+	if (!GetWorld() || !IsValid(WeaponConfig) || !IsValid(GetOwnerMesh()) || !IsValid(WeaponConfig->WeaponClass))
+	{
+		return;
+	}
 	
-	Weapon = GetWorld()->SpawnActor<APAWeapon>(WeaponClass);
-	if (!IsValid(Weapon)) return;
-	
-	const FAttachmentTransformRules AttachmentRules = FAttachmentTransformRules(EAttachmentRule::SnapToTarget, false);
-	Weapon->AttachToComponent(GetOwnerMesh(), AttachmentRules, AttachWeaponSocket);
-	Weapon->SetOwner(ComponentOwner);
-	
+	Weapon = Cast<APAWeapon>(UGameplayStatics::BeginDeferredActorSpawnFromClass(GetWorld(), WeaponConfig->WeaponClass, FTransform()));
+	if (Weapon)
+	{
+		Weapon->SetWeaponConfig(WeaponConfig);
+		const FAttachmentTransformRules AttachmentRules = FAttachmentTransformRules(EAttachmentRule::SnapToTarget, false);
+		Weapon->AttachToComponent(GetOwnerMesh(), AttachmentRules, WeaponConfig->AttachWeaponSocket);
+		Weapon->SetOwner(ComponentOwner);
+		UGameplayStatics::FinishSpawningActor(Weapon, FTransform());
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Failed to spawn weapon of class %s"), *WeaponConfig->WeaponClass->GetName());
+	}
 }
 
 void UWeaponComponent::StartAttack()
 {
-	Weapon->StartAttack();
-	
+	if (IsValid(Weapon))
+	{
+		Weapon->StartAttack();
+	}
 }
 
 void UWeaponComponent::StopAttack()
 {
-	Weapon->StopAttack();
-	
+	if (IsValid(Weapon))
+	{
+		Weapon->StopAttack();
+	}
 }
 
 
