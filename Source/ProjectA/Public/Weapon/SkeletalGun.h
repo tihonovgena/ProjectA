@@ -12,7 +12,7 @@ DECLARE_LOG_CATEGORY_EXTERN(WeaponGun, Display, All);
 
 class USkeletalMeshComponent;
 
-UCLASS()
+UCLASS(Abstract)
 class PROJECTA_API ASkeletalGun : public APAWeapon
 {
 	GENERATED_BODY()
@@ -30,6 +30,8 @@ protected:
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category="Mesh")
 	USkeletalMeshComponent* WeaponMesh;
 
+
+	//Put to weapon data asset
 	UPROPERTY(EditDefaultsOnly, Category="Weapon")
 	FName ShotSocketName = "ShotSocket";
 
@@ -46,14 +48,9 @@ public:
 	
 protected:
 	virtual void MakeShot();
-	
 	void MakeDamage(FHitResult& HitResult);
-	
-	bool MakeShotTrace(FHitResult& HitResult, FVector& StartTrace, FVector& EndTrace);
-	
+
 private:
-	bool GetTraceData(FVector& StartTrace, FVector& EndTrace);
-	
 	FTimerHandle ShootTimer;
 	
 #pragma endregion 
