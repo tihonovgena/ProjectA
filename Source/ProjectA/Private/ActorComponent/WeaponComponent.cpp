@@ -6,7 +6,6 @@
 #include "GameFramework/Character.h"
 #include "TimerManager.h"
 #include "DrawDebugHelpers.h"
-#include "Kismet/GameplayStatics.h"
 #include "Weapon/WeaponConfig/BaseWeaponConfig.h"
 
 DEFINE_LOG_CATEGORY(WeaponComponent);
@@ -56,15 +55,15 @@ void UWeaponComponent::SpawnWeapon(UBaseWeaponConfig* WeaponConfig)
 	{
 		return;
 	}
-	
-	Weapon = Cast<APAWeapon>(UGameplayStatics::BeginDeferredActorSpawnFromClass(GetWorld(), WeaponConfig->WeaponClass, FTransform()));
+
+	Weapon = GetWorld()->SpawnActorDeferred<APAWeapon>(WeaponConfig->WeaponClass, FTransform());
 	if (Weapon)
 	{
 		Weapon->SetWeaponConfig(WeaponConfig);
 		const FAttachmentTransformRules AttachmentRules = FAttachmentTransformRules(EAttachmentRule::SnapToTarget, false);
 		Weapon->AttachToComponent(GetOwnerMesh(), AttachmentRules, WeaponConfig->AttachWeaponSocket);
 		Weapon->SetOwner(ComponentOwner);
-		UGameplayStatics::FinishSpawningActor(Weapon, FTransform());
+		Weapon->FinishSpawning(FTransform());
 	}
 	else
 	{
