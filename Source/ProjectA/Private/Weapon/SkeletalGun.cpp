@@ -19,20 +19,9 @@ ASkeletalGun::ASkeletalGun()
 	}
 }
 
-void ASkeletalGun::SetWeaponConfig(UBaseWeaponConfig* NewWeaponConfig)
-{
-	//Always put the super call for that method.
-	Super::SetWeaponConfig(NewWeaponConfig);
-	
-	if (NewWeaponConfig)
-	{
-		GunWeaponConfig = Cast<UGunWeaponConfig>(NewWeaponConfig);
-	}
-}
-
 FTransform ASkeletalGun::GetShotSocketTransform()
 {
-	return WeaponMesh->GetSocketTransform(GunWeaponConfig->ShotSocketName);
+	return WeaponMesh->GetSocketTransform(GetGunWeaponConfig()->ShotSocketName);
 }
 
 AController* ASkeletalGun::GetOwnerController()
@@ -44,17 +33,21 @@ AController* ASkeletalGun::GetOwnerController()
 	
 }
 
+UGunWeaponConfig* ASkeletalGun::GetGunWeaponConfig()
+{
+	return Cast<UGunWeaponConfig>(GetWeaponConfig());
+}
+
 void ASkeletalGun::BeginPlay()
 {
 	Super::BeginPlay();
 	check(WeaponMesh);
-	check(GunWeaponConfig);
 }
 
 void ASkeletalGun::StartAttack()
 {
 	GetWorldTimerManager().SetTimer
-	(ShootTimer,this, &ASkeletalGun::MakeShot, GunWeaponConfig->FireRate, true, -1);
+	(ShootTimer,this, &ASkeletalGun::MakeShot, GetGunWeaponConfig()->FireRate, true, -1);
 }
 
 void ASkeletalGun::StopAttack()

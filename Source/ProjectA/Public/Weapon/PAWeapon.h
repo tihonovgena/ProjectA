@@ -17,8 +17,14 @@ public:
 	APAWeapon();
 	virtual void StartAttack();
 	virtual void StopAttack();
-	virtual void SetWeaponConfig(UBaseWeaponConfig* NewWeaponConfig);
+	void SetWeaponConfig(UBaseWeaponConfig* NewWeaponConfig);
+	UBaseWeaponConfig* GetWeaponConfig();
 
 protected:
 	virtual void BeginPlay() override;
+
+private:
+	UPROPERTY()
+	TObjectPtr<UBaseWeaponConfig> WeaponConfig;
+	
 };

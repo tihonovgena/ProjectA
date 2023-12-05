@@ -7,9 +7,9 @@
 #include "WeaponComponent.generated.h"
 
 class UBaseWeaponConfig;
-DECLARE_LOG_CATEGORY_EXTERN(WeaponComponent, Display, All);
-
 class APAWeapon;
+
+DECLARE_LOG_CATEGORY_EXTERN(WeaponComponent, Display, All);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class PROJECTA_API UWeaponComponent : public UActorComponent
@@ -29,13 +29,13 @@ protected:
 	USceneComponent* GetOwnerMesh() const;
 
 	UPROPERTY()
-	AActor* ComponentOwner;
+	TObjectPtr<AActor> ComponentOwner;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	bool bSpawnDefaultWeapon = true;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-	UBaseWeaponConfig* DefaultWeaponConfig;
+	TObjectPtr<UBaseWeaponConfig> DefaultWeaponConfig;
 	
 	UPROPERTY(BlueprintReadWrite, Category="Weapon")
 	TObjectPtr<APAWeapon> Weapon;

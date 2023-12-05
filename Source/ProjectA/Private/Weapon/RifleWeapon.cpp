@@ -9,26 +9,19 @@ bool ARifleWeapon::GetTraceData(FVector& StartTrace, FVector& EndTrace)
 {
 	StartTrace = GetShotSocketTransform().GetLocation();
 	const FVector TraceDirection = GetShotSocketTransform().GetRotation().GetForwardVector();
-	EndTrace = StartTrace + (TraceDirection * RifleWeaponConfig->ShotDistance);
+	EndTrace = StartTrace + (TraceDirection * GetRifleWeaponConfig()->ShotDistance);
 	return true;
 	
 }
 
-void ARifleWeapon::SetWeaponConfig(UBaseWeaponConfig* NewWeaponConfig)
+URifleWeaponConfig* ARifleWeapon::GetRifleWeaponConfig()
 {
-	//Always put the super call for that method.
-	Super::SetWeaponConfig(NewWeaponConfig);
-	
-	if (NewWeaponConfig)
-	{
-		RifleWeaponConfig = Cast<URifleWeaponConfig>(NewWeaponConfig);
-	}
+	return Cast<URifleWeaponConfig>(GetWeaponConfig());
 }
 
 void ARifleWeapon::BeginPlay()
 {
 	Super::BeginPlay();
-	check(RifleWeaponConfig);
 }
 
 void ARifleWeapon::MakeShot()
@@ -57,6 +50,6 @@ bool ARifleWeapon::MakeShotTrace(FHitResult& HitResult, FVector& StartTrace, FVe
 {
 	if(!GetWorld()) return false;
 	GetTraceData(StartTrace, EndTrace);
-	GetWorld()->LineTraceSingleByChannel(HitResult, StartTrace, EndTrace, COLLISION_WEAPON);
+	GetWorld()->LineTraceSingleByChannel(HitResult, StartTrace, EndTrace, UE_COLLISION_WEAPON);
 	return true;
 }

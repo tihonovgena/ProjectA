@@ -30,23 +30,14 @@ APlayerCharacter::APlayerCharacter()
 	LookAtTargetComponent = CreateDefaultSubobject<ULookAtTargetComponent>(TEXT("LookAtTarget"));
 	
 	CameraSpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraSpringArm"));
-	if (CameraSpringArm)
-	{
-		CameraSpringArm->SetupAttachment(GetRootComponent());
-		CameraSpringArm->bInheritYaw = false;
-	}
+	CameraSpringArm->SetupAttachment(GetRootComponent());
+	CameraSpringArm->bInheritYaw = false;
 	
 	PlayerCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("PlayerCamera"));
-	if (PlayerCamera)
-	{
-		PlayerCamera->SetupAttachment(CameraSpringArm);
-	}
+	PlayerCamera->SetupAttachment(CameraSpringArm);
 	
 	CameraDirection = CreateDefaultSubobject<UArrowComponent>(TEXT("CameraDirection"));
-	if (CameraDirection)
-	{
-		CameraDirection->SetupAttachment(CameraSpringArm);
-	}
+	CameraDirection->SetupAttachment(CameraSpringArm);
 	
 }
 

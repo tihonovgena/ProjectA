@@ -21,7 +21,13 @@ void APAWeapon::StopAttack()
 
 void APAWeapon::SetWeaponConfig(UBaseWeaponConfig* NewWeaponConfig)
 {
-	//Always put the super call for that method.
+	check(NewWeaponConfig);
+	WeaponConfig = NewWeaponConfig;
+}
+
+UBaseWeaponConfig* APAWeapon::GetWeaponConfig()
+{
+	return WeaponConfig;
 }
 
 void APAWeapon::BeginPlay()

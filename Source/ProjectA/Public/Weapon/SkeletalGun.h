@@ -6,12 +6,10 @@
 #include "Weapon/PAWeapon.h"
 #include "SkeletalGun.generated.h"
 
-#define COLLISION_WEAPON ECC_GameTraceChannel1
-
 class UGunWeaponConfig;
-DECLARE_LOG_CATEGORY_EXTERN(WeaponGun, Display, All);
-
 class USkeletalMeshComponent;
+
+DECLARE_LOG_CATEGORY_EXTERN(WeaponGun, Display, All);
 
 UCLASS(Abstract)
 class PROJECTA_API ASkeletalGun : public APAWeapon
@@ -20,10 +18,7 @@ class PROJECTA_API ASkeletalGun : public APAWeapon
 	
 public:
 	ASkeletalGun();
-
-	virtual void SetWeaponConfig(UBaseWeaponConfig* NewWeaponConfig) override;
 	virtual FTransform GetShotSocketTransform();
-
 	AController* GetOwnerController();
 
 protected:
@@ -31,8 +26,6 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category="Mesh")
 	USkeletalMeshComponent* WeaponMesh;
-
-
 
 #pragma region Shoot
 public:
@@ -44,10 +37,9 @@ protected:
 	void MakeDamage(FHitResult& HitResult);
 
 private:
+	UGunWeaponConfig* GetGunWeaponConfig();
 	FTimerHandle ShootTimer;
 	
-	UPROPERTY()
-	const UGunWeaponConfig* GunWeaponConfig;
 #pragma endregion 
 	
 };
