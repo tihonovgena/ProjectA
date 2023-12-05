@@ -1,16 +1,16 @@
 // ProjectA, Tikhonov Gennadii, All Rights Reserved
 
 
-#include "Weapon/LauncherWeapon.h"
+#include "Weapon/BaseLauncherWeapon.h"
 #include "Weapon/WeaponConfig/LauncherWeaponConfig.h"
 #include "Weapon/Projectile/BaseProjectile.h"
 
-ULauncherWeaponConfig* ALauncherWeapon::GetLauncherWeaponConfig()
+ULauncherWeaponConfig* ABaseLauncherWeapon::GetLauncherWeaponConfig()
 {
 	return Cast<ULauncherWeaponConfig>(GetWeaponConfig());
 }
 
-void ALauncherWeapon::MakeShot()
+void ABaseLauncherWeapon::MakeShot()
 {
 	const FTransform SpawnTransform = GetShotSocketTransform();
 	ABaseProjectile* Projectile = GetWorld()->SpawnActorDeferred<ABaseProjectile>(GetLauncherWeaponConfig()->ProjectileClass, SpawnTransform);

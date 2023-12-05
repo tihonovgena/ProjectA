@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Weapon/SkeletalGun.h"
-#include "LauncherWeapon.generated.h"
+#include "BaseGunWeapon.h"
+#include "BaseLauncherWeapon.generated.h"
 
 
 class ULauncherWeaponConfig;
 
-UCLASS()
-class PROJECTA_API ALauncherWeapon : public ASkeletalGun
+UCLASS(Abstract)
+class PROJECTA_API ABaseLauncherWeapon : public ABaseGunWeapon
 {
 	GENERATED_BODY()
 

@@ -14,7 +14,6 @@ class PROJECTA_API APAWeapon : public AActor
 	GENERATED_BODY()
 	
 public:	
-	APAWeapon();
 	virtual void StartAttack();
 	virtual void StopAttack();
 	void SetWeaponConfig(UBaseWeaponConfig* NewWeaponConfig);

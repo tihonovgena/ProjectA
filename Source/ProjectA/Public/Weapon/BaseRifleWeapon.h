@@ -3,15 +3,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Weapon/SkeletalGun.h"
-#include "RifleWeapon.generated.h"
+#include "BaseGunWeapon.h"
+#include "BaseRifleWeapon.generated.h"
 
 class URifleWeaponConfig;
 
 #define UE_COLLISION_WEAPON ECC_GameTraceChannel1
 
-UCLASS()
-class PROJECTA_API ARifleWeapon : public ASkeletalGun
+UCLASS(Abstract)
+class PROJECTA_API ABaseRifleWeapon : public ABaseGunWeapon
 {
 	GENERATED_BODY()
 	

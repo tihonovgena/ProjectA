@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Weapon/PAWeapon.h"
-#include "SkeletalGun.generated.h"
+#include "BaseGunWeapon.generated.h"
 
 class UGunWeaponConfig;
 class USkeletalMeshComponent;
@@ -12,20 +12,16 @@ class USkeletalMeshComponent;
 DECLARE_LOG_CATEGORY_EXTERN(WeaponGun, Display, All);
 
 UCLASS(Abstract)
-class PROJECTA_API ASkeletalGun : public APAWeapon
+class PROJECTA_API ABaseGunWeapon : public APAWeapon
 {
 	GENERATED_BODY()
 	
 public:
-	ASkeletalGun();
 	virtual FTransform GetShotSocketTransform();
 	AController* GetOwnerController();
 
 protected:
 	virtual void BeginPlay() override;
-
-	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category="Mesh")
-	USkeletalMeshComponent* WeaponMesh;
 
 #pragma region Shoot
 public:

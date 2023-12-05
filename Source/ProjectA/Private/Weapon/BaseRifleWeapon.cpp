@@ -1,11 +1,11 @@
 // ProjectA, Tikhonov Gennadii, All Rights Reserved
 
 
-#include "Weapon/RifleWeapon.h"
+#include "Weapon/BaseRifleWeapon.h"
 #include "DrawDebugHelpers.h"
 #include "Weapon/WeaponConfig/RifleWeaponConfig.h"
 
-bool ARifleWeapon::GetTraceData(FVector& StartTrace, FVector& EndTrace)
+bool ABaseRifleWeapon::GetTraceData(FVector& StartTrace, FVector& EndTrace)
 {
 	StartTrace = GetShotSocketTransform().GetLocation();
 	const FVector TraceDirection = GetShotSocketTransform().GetRotation().GetForwardVector();
@@ -14,17 +14,17 @@ bool ARifleWeapon::GetTraceData(FVector& StartTrace, FVector& EndTrace)
 	
 }
 
-URifleWeaponConfig* ARifleWeapon::GetRifleWeaponConfig()
+URifleWeaponConfig* ABaseRifleWeapon::GetRifleWeaponConfig()
 {
 	return Cast<URifleWeaponConfig>(GetWeaponConfig());
 }
 
-void ARifleWeapon::BeginPlay()
+void ABaseRifleWeapon::BeginPlay()
 {
 	Super::BeginPlay();
 }
 
-void ARifleWeapon::MakeShot()
+void ABaseRifleWeapon::MakeShot()
 {
 	if(!GetWorld()) return;
 
@@ -46,7 +46,7 @@ void ARifleWeapon::MakeShot()
 	}
 }
 
-bool ARifleWeapon::MakeShotTrace(FHitResult& HitResult, FVector& StartTrace, FVector& EndTrace)
+bool ABaseRifleWeapon::MakeShotTrace(FHitResult& HitResult, FVector& StartTrace, FVector& EndTrace)
 {
 	if(!GetWorld()) return false;
 	GetTraceData(StartTrace, EndTrace);
