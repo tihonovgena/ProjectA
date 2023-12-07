@@ -15,5 +15,6 @@ void ABaseLauncherWeapon::MakeShot()
 	const FTransform SpawnTransform = GetShotSocketTransform();
 	ABaseProjectile* Projectile = GetWorld()->SpawnActorDeferred<ABaseProjectile>(GetLauncherWeaponConfig()->ProjectileClass, SpawnTransform);
 	Projectile->SetMoveDirection(GetShotSocketTransform().GetRotation().GetForwardVector());
+	Projectile->SetOwner(GetOwner());
 	Projectile->FinishSpawning(SpawnTransform);
 }
