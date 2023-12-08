@@ -25,22 +25,28 @@ public:
 	
 protected:
 	virtual void BeginPlay() override;
-	void SpawnDefaultWeapon();
+	void SpawnWeapons();
 	USceneComponent* GetOwnerMesh() const;
 
 	UPROPERTY()
 	TObjectPtr<AActor> ComponentOwner;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	FName WeaponArmorySocketName = "WeaponArmorySocket";
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-	bool bSpawnDefaultWeapon = true;
-	
-	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-	TObjectPtr<UBaseWeaponConfig> DefaultWeaponConfig;
+	TArray<TSubclassOf<APAWeapon>> WeaponClasses;
 	
 	UPROPERTY(BlueprintReadWrite, Category="Weapon")
-	TObjectPtr<APAWeapon> Weapon;
+	TObjectPtr<APAWeapon> ArmedWeapon;
 
 private:
-	void SpawnWeapon(UBaseWeaponConfig* WeaponConfig);
+	APAWeapon* SpawnWeapon(TSubclassOf<APAWeapon> WeaponClass);
+	void EquipWeaponIndex(int32 WeaponIndex);
+
+	UPROPERTY()
+	TArray<APAWeapon*> Weapons;
+
+	int32 ArmedWeaponIndex = 0;
 
 };

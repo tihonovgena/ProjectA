@@ -16,14 +16,14 @@ class PROJECTA_API APAWeapon : public AActor
 public:	
 	virtual void StartAttack();
 	virtual void StopAttack();
-	void SetWeaponConfig(UBaseWeaponConfig* NewWeaponConfig);
 	UBaseWeaponConfig* GetWeaponConfig();
+	void AttachWeaponToArmedSocket(USceneComponent* OwnerComponent);
 
 protected:
 	virtual void BeginPlay() override;
 
 private:
-	UPROPERTY()
-	TObjectPtr<UBaseWeaponConfig> WeaponConfig;
+	UPROPERTY(EditDefaultsOnly, Category = "WeaponConfig")
+	const TObjectPtr<UBaseWeaponConfig> WeaponConfig;
 	
 };

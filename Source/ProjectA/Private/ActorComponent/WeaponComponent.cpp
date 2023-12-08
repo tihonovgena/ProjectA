@@ -6,7 +6,6 @@
 #include "GameFramework/Character.h"
 #include "TimerManager.h"
 #include "DrawDebugHelpers.h"
-#include "Weapon/WeaponConfig/BaseWeaponConfig.h"
 
 DEFINE_LOG_CATEGORY(WeaponComponent);
 
@@ -37,53 +36,68 @@ void UWeaponComponent::BeginPlay()
 	ComponentOwner = GetOwner();
 	check(ComponentOwner)
 	
-	if (bSpawnDefaultWeapon)
-	{
-		SpawnDefaultWeapon();
-	}
+	SpawnWeapons();
 	
 }
 
-void UWeaponComponent::SpawnDefaultWeapon()
+void UWeaponComponent::SpawnWeapons()
 {
-	SpawnWeapon(DefaultWeaponConfig);
+	for (const auto WeaponClass : WeaponClasses)
+	{
+		if (SpawnWeapon(WeaponClass))
+		{
+			Weapons.Add(SpawnWeapon(WeaponClass));
+		}
+	}
+	
+	EquipWeaponIndex(ArmedWeaponIndex);
 }
 
-void UWeaponComponent::SpawnWeapon(UBaseWeaponConfig* WeaponConfig)
+APAWeapon* UWeaponComponent::SpawnWeapon(TSubclassOf<APAWeapon> WeaponClass)
 {
-	if (!GetWorld() || !IsValid(WeaponConfig) || !IsValid(GetOwnerMesh()) || !IsValid(WeaponConfig->WeaponClass))
+	if (!GetWorld() || !IsValid(WeaponClass) || !IsValid(GetOwnerMesh()))
 	{
-		return;
+		return nullptr;
 	}
 
-	Weapon = GetWorld()->SpawnActorDeferred<APAWeapon>(WeaponConfig->WeaponClass, FTransform());
+	APAWeapon* Weapon = GetWorld()->SpawnActorDeferred<APAWeapon>(WeaponClass, FTransform());
 	if (Weapon)
 	{
-		Weapon->SetWeaponConfig(WeaponConfig);
-		const FAttachmentTransformRules AttachmentRules = FAttachmentTransformRules(EAttachmentRule::SnapToTarget, false);
-		Weapon->AttachToComponent(GetOwnerMesh(), AttachmentRules, WeaponConfig->AttachWeaponSocket);
 		Weapon->SetOwner(ComponentOwner);
+		const FAttachmentTransformRules AttachmentRules = FAttachmentTransformRules(EAttachmentRule::SnapToTarget, false);
+		Weapon->AttachToComponent(GetOwnerMesh(), AttachmentRules, WeaponArmorySocketName);
 		Weapon->FinishSpawning(FTransform());
+		return Weapon;
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("Failed to spawn weapon of class %s"), *WeaponConfig->WeaponClass->GetName());
+		UE_LOG(LogTemp, Error, TEXT("Failed to spawn weapon of class %s"), *WeaponClass->GetName());
+		return nullptr;
+	}
+}
+
+void UWeaponComponent::EquipWeaponIndex(int32 WeaponIndex)
+{
+	if (Weapons.IsValidIndex(WeaponIndex) && IsValid(Weapons[WeaponIndex]))
+	{
+		ArmedWeapon = Weapons[WeaponIndex];
+		Weapons[WeaponIndex]->AttachWeaponToArmedSocket(GetOwnerMesh());
 	}
 }
 
 void UWeaponComponent::StartAttack()
 {
-	if (IsValid(Weapon))
+	if (IsValid(ArmedWeapon))
 	{
-		Weapon->StartAttack();
+		ArmedWeapon->StartAttack();
 	}
 }
 
 void UWeaponComponent::StopAttack()
 {
-	if (IsValid(Weapon))
+	if (IsValid(ArmedWeapon))
 	{
-		Weapon->StopAttack();
+		ArmedWeapon->StopAttack();
 	}
 }
 
