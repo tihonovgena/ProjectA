@@ -139,6 +139,12 @@ void APlayerCharacter::OnHealthChanged(float Health)
 	UE_LOG(PlayerCharacter, Display, TEXT("Player %s has new health - %f"), *GetName(), Health);
 }
 
+void APlayerCharacter::SwitchWeapon()
+{
+	WeaponComponent->StopAttack();
+	WeaponComponent->SwitchWeapon();
+}
+
 void APlayerCharacter::SetupMappingContext() const
 {
 	const UInputMappingContext* InputMappingContext = InputMapping.LoadSynchronous();
@@ -181,5 +187,6 @@ void APlayerCharacter::BindInputActions(UInputComponent* PlayerInputComponent)
 	}
 	
 	PlayerEnhancedInputComponent->BindAction(ActionAsset->Movement, ETriggerEvent::Triggered, this, &APlayerCharacter::Move);
+	PlayerEnhancedInputComponent->BindAction(ActionAsset->SwitchWeapon, ETriggerEvent::Completed, this, &APlayerCharacter::SwitchWeapon);
 }
 

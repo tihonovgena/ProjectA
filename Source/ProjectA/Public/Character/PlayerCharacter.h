@@ -109,6 +109,8 @@ protected:
 #pragma region Weapon
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Weapon", meta = (AllowPrivateAccess = "true"))
 	UWeaponComponent* WeaponComponent;
+
+	void SwitchWeapon();
 #pragma endregion
 	
 };

@@ -19,4 +19,7 @@ class PROJECTA_API UBaseInputConfigAsset : public UDataAsset
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UInputAction* Movement;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UInputAction* SwitchWeapon;
 };

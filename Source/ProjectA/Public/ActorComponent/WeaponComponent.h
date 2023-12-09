@@ -22,6 +22,7 @@ public:
 	AController* GetOwnerController();
 	void StartAttack();
 	void StopAttack();
+	void SwitchWeapon();
 	
 protected:
 	virtual void BeginPlay() override;
@@ -43,6 +44,7 @@ protected:
 private:
 	APAWeapon* SpawnWeapon(TSubclassOf<APAWeapon> WeaponClass);
 	void EquipWeaponIndex(int32 WeaponIndex);
+	void AttachWeaponToArmorySocket(APAWeapon* Weapon);
 
 	UPROPERTY()
 	TArray<APAWeapon*> Weapons;

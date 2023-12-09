@@ -64,8 +64,7 @@ APAWeapon* UWeaponComponent::SpawnWeapon(TSubclassOf<APAWeapon> WeaponClass)
 	if (Weapon)
 	{
 		Weapon->SetOwner(ComponentOwner);
-		const FAttachmentTransformRules AttachmentRules = FAttachmentTransformRules(EAttachmentRule::SnapToTarget, false);
-		Weapon->AttachToComponent(GetOwnerMesh(), AttachmentRules, WeaponArmorySocketName);
+		AttachWeaponToArmorySocket(Weapon);
 		Weapon->FinishSpawning(FTransform());
 		return Weapon;
 	}
@@ -80,9 +79,20 @@ void UWeaponComponent::EquipWeaponIndex(int32 WeaponIndex)
 {
 	if (Weapons.IsValidIndex(WeaponIndex) && IsValid(Weapons[WeaponIndex]))
 	{
+		if (IsValid(ArmedWeapon))
+		{
+			AttachWeaponToArmorySocket(ArmedWeapon);
+		}
 		ArmedWeapon = Weapons[WeaponIndex];
 		Weapons[WeaponIndex]->AttachWeaponToArmedSocket(GetOwnerMesh());
+		ArmedWeaponIndex = WeaponIndex;
 	}
+}
+
+void UWeaponComponent::AttachWeaponToArmorySocket(APAWeapon* Weapon)
+{
+	const FAttachmentTransformRules AttachmentRules = FAttachmentTransformRules(EAttachmentRule::SnapToTarget, false);
+	Weapon->AttachToComponent(GetOwnerMesh(), AttachmentRules, WeaponArmorySocketName);
 }
 
 void UWeaponComponent::StartAttack()
@@ -98,6 +108,14 @@ void UWeaponComponent::StopAttack()
 	if (IsValid(ArmedWeapon))
 	{
 		ArmedWeapon->StopAttack();
+	}
+}
+
+void UWeaponComponent::SwitchWeapon()
+{
+	if (Weapons.Num() > 1)
+	{
+		EquipWeaponIndex(Weapons.IsValidIndex(ArmedWeaponIndex + 1) ? ArmedWeaponIndex + 1 : 0);
 	}
 }
 
