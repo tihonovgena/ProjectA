@@ -26,6 +26,7 @@ public:
 	
 protected:
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	void SpawnWeapons();
 	USceneComponent* GetOwnerMesh() const;
 
@@ -43,12 +44,11 @@ protected:
 
 private:
 	APAWeapon* SpawnWeapon(TSubclassOf<APAWeapon> WeaponClass);
-	void EquipWeaponIndex(int32 WeaponIndex);
+	void EquipWeapon(APAWeapon* Weapon);
 	void AttachWeaponToArmorySocket(APAWeapon* Weapon);
+	int32 GetNextWeaponIndex();
 
 	UPROPERTY()
 	TArray<APAWeapon*> Weapons;
-
-	int32 ArmedWeaponIndex = 0;
 
 };

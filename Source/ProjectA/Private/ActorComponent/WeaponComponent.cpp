@@ -40,6 +40,18 @@ void UWeaponComponent::BeginPlay()
 	
 }
 
+void UWeaponComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	for (const auto Weapon : Weapons)
+	{
+		Weapon->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+		Weapon->Destroy(); 
+	}
+	Weapons.Empty();
+	ArmedWeapon = nullptr;
+	Super::EndPlay(EndPlayReason);
+}
+
 void UWeaponComponent::SpawnWeapons()
 {
 	for (const auto WeaponClass : WeaponClasses)
@@ -50,7 +62,7 @@ void UWeaponComponent::SpawnWeapons()
 		}
 	}
 	
-	EquipWeaponIndex(ArmedWeaponIndex);
+	EquipWeapon(Weapons[0]);
 }
 
 APAWeapon* UWeaponComponent::SpawnWeapon(TSubclassOf<APAWeapon> WeaponClass)
@@ -75,17 +87,17 @@ APAWeapon* UWeaponComponent::SpawnWeapon(TSubclassOf<APAWeapon> WeaponClass)
 	}
 }
 
-void UWeaponComponent::EquipWeaponIndex(int32 WeaponIndex)
+void UWeaponComponent::EquipWeapon(APAWeapon* Weapon)
 {
-	if (Weapons.IsValidIndex(WeaponIndex) && IsValid(Weapons[WeaponIndex]))
+	if (IsValid(Weapon))
 	{
 		if (IsValid(ArmedWeapon))
 		{
+			ArmedWeapon->StopAttack();
 			AttachWeaponToArmorySocket(ArmedWeapon);
 		}
-		ArmedWeapon = Weapons[WeaponIndex];
-		Weapons[WeaponIndex]->AttachWeaponToArmedSocket(GetOwnerMesh());
-		ArmedWeaponIndex = WeaponIndex;
+		ArmedWeapon = Weapon;
+		Weapon->AttachWeaponToArmedSocket(GetOwnerMesh());
 	}
 }
 
@@ -93,6 +105,13 @@ void UWeaponComponent::AttachWeaponToArmorySocket(APAWeapon* Weapon)
 {
 	const FAttachmentTransformRules AttachmentRules = FAttachmentTransformRules(EAttachmentRule::SnapToTarget, false);
 	Weapon->AttachToComponent(GetOwnerMesh(), AttachmentRules, WeaponArmorySocketName);
+}
+
+int32 UWeaponComponent::GetNextWeaponIndex()
+{
+	int32 ArmedWeaponIndex;
+	Weapons.Find(ArmedWeapon, ArmedWeaponIndex);
+	return Weapons.IsValidIndex(ArmedWeaponIndex + 1) ? ArmedWeaponIndex + 1 : 0;
 }
 
 void UWeaponComponent::StartAttack()
@@ -115,7 +134,7 @@ void UWeaponComponent::SwitchWeapon()
 {
 	if (Weapons.Num() > 1)
 	{
-		EquipWeaponIndex(Weapons.IsValidIndex(ArmedWeaponIndex + 1) ? ArmedWeaponIndex + 1 : 0);
+		EquipWeapon(Weapons[GetNextWeaponIndex()]);
 	}
 }
 

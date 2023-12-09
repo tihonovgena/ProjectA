@@ -129,6 +129,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 void APlayerCharacter::OnDeath()
 {
 	Super::OnDeath();
+	WeaponComponent->StopAttack();
 	EnemyDetectorComponent->Deactivate();
 	GetCharacterMovement()->DisableMovement();
 	SetLifeSpan(5.0f);
@@ -141,8 +142,11 @@ void APlayerCharacter::OnHealthChanged(float Health)
 
 void APlayerCharacter::SwitchWeapon()
 {
-	WeaponComponent->StopAttack();
 	WeaponComponent->SwitchWeapon();
+	if (IsValid(GetNearestEnemy()))
+	{
+		WeaponComponent->StartAttack();
+	}
 }
 
 void APlayerCharacter::SetupMappingContext() const
