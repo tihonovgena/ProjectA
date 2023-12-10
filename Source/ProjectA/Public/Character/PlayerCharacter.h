@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Character/PACharacter.h"
 #include "Interface/LookAtTargetInterface.h"
+#include "Interface/WeaponComponentInterface.h"
 #include "PlayerCharacter.generated.h"
 
 class ULookAtTargetComponent;
@@ -27,7 +28,7 @@ enum EMovementOrientationMode
 };
 
 UCLASS()
-class PROJECTA_API APlayerCharacter : public APACharacter, public ILookAtTargetInterface
+class PROJECTA_API APlayerCharacter : public APACharacter, public ILookAtTargetInterface, public IWeaponComponentInterface
 
 {
 	GENERATED_BODY()
@@ -107,10 +108,20 @@ protected:
 #pragma endregion
 
 #pragma region Weapon
+public:
+	virtual USceneComponent* GetWeaponComponentOwnerMesh() override;
+	
+	UFUNCTION()
+	void OnSwitchWeapon();
+	UFUNCTION()
+	void OnFinishSwitchWeapon();
+	
+private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Weapon", meta = (AllowPrivateAccess = "true"))
 	UWeaponComponent* WeaponComponent;
-
+	
 	void SwitchWeapon();
+
 #pragma endregion
 	
 };

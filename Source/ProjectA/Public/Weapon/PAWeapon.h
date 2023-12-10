@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "PAWeapon.generated.h"
 
+class UBaseWeaponAction;
 class UBaseWeaponConfig;
 
 UCLASS(Abstract)
@@ -16,7 +17,10 @@ class PROJECTA_API APAWeapon : public AActor
 public:	
 	virtual void StartAttack();
 	virtual void StopAttack();
+	
 	UBaseWeaponConfig* GetWeaponConfig();
+	UAnimMontage* GetEquipWeaponAnimMontage();
+	
 	void AttachWeaponToArmedSocket(USceneComponent* OwnerComponent);
 
 protected:

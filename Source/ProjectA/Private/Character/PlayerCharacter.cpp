@@ -7,7 +7,7 @@
 #include "Camera/CameraComponent.h"
 #include "Input/BaseInputConfigAsset.h"
 #include "InputMappingContext.h"
-#include "ActorComponent/HealthComponent.h"
+#include "ActorComponent/ActionMontageComponent.h"
 #include "Components/ArrowComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -140,13 +140,27 @@ void APlayerCharacter::OnHealthChanged(float Health)
 	UE_LOG(PlayerCharacter, Display, TEXT("Player %s has new health - %f"), *GetName(), Health);
 }
 
+USceneComponent* APlayerCharacter::GetWeaponComponentOwnerMesh()
+{
+	return GetMesh();
+}
+
 void APlayerCharacter::SwitchWeapon()
 {
+	GetActionMontageComponent()->BeginAction(
+		WeaponComponent->GetEquipWeaponAnimMontage(),
+		&APlayerCharacter::OnSwitchWeapon,
+		&APlayerCharacter::OnFinishSwitchWeapon);
+}
+
+void APlayerCharacter::OnSwitchWeapon()
+{
 	WeaponComponent->SwitchWeapon();
-	if (IsValid(GetNearestEnemy()))
-	{
-		WeaponComponent->StartAttack();
-	}
+}
+
+void APlayerCharacter::OnFinishSwitchWeapon()
+{
+	WeaponComponent->FinishSwitchWeapon();
 }
 
 void APlayerCharacter::SetupMappingContext() const

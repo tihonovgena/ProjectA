@@ -14,10 +14,13 @@ class PROJECTA_API UBaseWeaponConfig : public UDataAsset
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(EditDefaultsOnly, Category="Attachment")
+	UPROPERTY(EditDefaultsOnly, Category = "Attachment")
 	FName AttachWeaponSocket = "WeaponSocketR";
 	
-	UPROPERTY(EditDefaultsOnly, Category="Weapon")
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	TSubclassOf<APAWeapon> WeaponClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Animation")
+	TObjectPtr<UAnimMontage> EquipWeaponAnimMontage; 
 	
 };

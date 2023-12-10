@@ -4,12 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Interface/ActionMontageInterface.h"
 #include "PACharacter.generated.h"
 
+class UActionMontageComponent;
 class UHealthComponent;
 
 UCLASS()
-class PROJECTA_API APACharacter : public ACharacter
+class PROJECTA_API APACharacter : public ACharacter, public IActionMontageInterface
 {
 	GENERATED_BODY()
 
@@ -42,5 +44,20 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Health", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UHealthComponent> HealthComponent;
 
-#pragma endregion	
+#pragma endregion
+
+#pragma region ActionMontage
+public:
+	UActionMontageComponent* GetActionMontageComponent();
+	virtual void PlayActionMontage(UAnimMontage* AnimMontage) override;
+	virtual void OnStartedActionMontage() override;
+	virtual void OnActiveActionMontage() override;
+	virtual void OnFinishedActionMontage() override;
+	
+private:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UActionMontageComponent> ActionMontageComponent;
+	
+#pragma endregion
+	
 };

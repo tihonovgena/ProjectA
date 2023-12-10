@@ -19,15 +19,20 @@ class PROJECTA_API UWeaponComponent : public UActorComponent
 public:	
 	UWeaponComponent();
 	
-	AController* GetOwnerController();
-	void StartAttack();
-	void StopAttack();
+	AController* GetOwnerController() const;
+	UAnimMontage* GetEquipWeaponAnimMontage();
+	
+	void StartAttack() const;
+	void StopAttack() const;
 	void SwitchWeapon();
+	void FinishSwitchWeapon();
 	
 protected:
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+	
 	void SpawnWeapons();
+	
 	USceneComponent* GetOwnerMesh() const;
 
 	UPROPERTY()
@@ -43,10 +48,12 @@ protected:
 	TObjectPtr<APAWeapon> ArmedWeapon;
 
 private:
-	APAWeapon* SpawnWeapon(TSubclassOf<APAWeapon> WeaponClass);
+	APAWeapon* SpawnWeapon(TSubclassOf<APAWeapon> WeaponClass) const;
+	
 	void EquipWeapon(APAWeapon* Weapon);
-	void AttachWeaponToArmorySocket(APAWeapon* Weapon);
-	int32 GetNextWeaponIndex();
+	void AttachWeaponToArmorySocket(APAWeapon* Weapon) const;
+	
+	int32 GetNextWeaponIndex() const;
 
 	UPROPERTY()
 	TArray<APAWeapon*> Weapons;
