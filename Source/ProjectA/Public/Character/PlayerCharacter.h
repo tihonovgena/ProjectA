@@ -114,6 +114,8 @@ public:
 	UFUNCTION()
 	void OnSwitchWeapon();
 	UFUNCTION()
+	void OnStartSwitchWeapon();
+	UFUNCTION()
 	void OnFinishSwitchWeapon();
 	
 private:

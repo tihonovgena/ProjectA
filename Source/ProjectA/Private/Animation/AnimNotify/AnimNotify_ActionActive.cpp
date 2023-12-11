@@ -1,10 +1,10 @@
 // ProjectA, Tikhonov Gennadii, All Rights Reserved
 
 
-#include "Animation/AnimNotify/ActionActive.h"
+#include "Animation/AnimNotify/AnimNotify_ActionActive.h"
 #include "Interface/ActionMontageInterface.h"
 
-void UActionActive::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
+void UAnimNotify_ActionActive::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
                            const FAnimNotifyEventReference& EventReference)
 {
 	Super::Notify(MeshComp, Animation, EventReference);

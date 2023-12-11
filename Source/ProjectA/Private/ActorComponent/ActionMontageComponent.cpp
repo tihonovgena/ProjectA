@@ -4,6 +4,7 @@
 #include "ActorComponent/ActionMontageComponent.h"
 #include "Interface/ActionMontageInterface.h"
 
+DEFINE_LOG_CATEGORY(ActionMontageComponent);
 
 UActionMontageComponent::UActionMontageComponent()
 {
@@ -16,6 +17,7 @@ void UActionMontageComponent::OnStartedActionMontage()
 	if (OnActionStarted.IsBound())
 	{
 		OnActionStarted.Execute();
+		UE_LOG(ActionMontageComponent, Display, TEXT("Owner:%s action started"), *GetOwner()->GetName());
 	}
 }
 
@@ -24,14 +26,18 @@ void UActionMontageComponent::OnActiveActionMontage()
 	if (OnActionActive.IsBound())
 	{
 		OnActionActive.Execute();
+		UE_LOG(ActionMontageComponent, Display, TEXT("Owner:%s action actived"), *GetOwner()->GetName());
 	}
 }
 
 void UActionMontageComponent::OnFinishedActionMontage()
 {
+	GetWorld()->GetTimerManager().ClearTimer(AnimMontageTimerHandle);
+	
 	if (OnActionFinished.IsBound())
 	{
 		OnActionFinished.Execute();
+		UE_LOG(ActionMontageComponent, Display, TEXT("Owner:%s action finished"), *GetOwner()->GetName());
 	}
 }
 
@@ -40,6 +46,22 @@ void UActionMontageComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	
+}
+
+void UActionMontageComponent::StartAction(UAnimMontage* AnimMontage)
+{
+	if (!GetWorld() && !AnimMontage) return;
+	
+	OnStartedActionMontage();
+	
+	GetWorld()->GetTimerManager().SetTimer(AnimMontageTimerHandle, this, &UActionMontageComponent::FinishAction, AnimMontage->GetPlayLength(), false, -1);
+	
+	PlayAnimMontage(AnimMontage);
+}
+
+void UActionMontageComponent::FinishAction()
+{
+	OnFinishedActionMontage();
 }
 
 void UActionMontageComponent::PlayAnimMontage(UAnimMontage* AnimMontage)

@@ -10,6 +10,8 @@ DECLARE_DELEGATE(FOnActionStartedSignature);
 DECLARE_DELEGATE(FOnActionActiveSignature);
 DECLARE_DELEGATE(FOnActionFinishedSignature);
 
+DECLARE_LOG_CATEGORY_EXTERN(ActionMontageComponent, Display, All);
+
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class PROJECTA_API UActionMontageComponent : public UActorComponent
 {
@@ -19,7 +21,7 @@ public:
 	UActionMontageComponent();
 	
 	template <class T>
-	void BeginAction(UAnimMontage* AnimMontage, void(T::* OnActionActiveFunction)(), void(T::* OnActionFinishedFunction)());
+	void BeginAction(UAnimMontage* AnimMontage, void(T::* OnActionActiveFunction)());
 
 	template <class T>
 	void BeginAction(UAnimMontage* AnimMontage, void(T::* OnActionStartedFunction)(), void(T::* OnActionActiveFunction)(), void(T::* OnActionFinishedFunction)());
@@ -35,20 +37,25 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+private:
+	void StartAction(UAnimMontage* AnimMontage);
+	void FinishAction();
 	void PlayAnimMontage(UAnimMontage* AnimMontage);
+
+	FTimerHandle AnimMontageTimerHandle;
 
 };
 
 template <class T>
-void UActionMontageComponent::BeginAction(UAnimMontage* AnimMontage, void(T::* OnActionActiveFunction)(), void(T::* OnActionFinishedFunction)())
+void UActionMontageComponent::BeginAction(UAnimMontage* AnimMontage, void(T::* OnActionActiveFunction)())
 {
 	T* CastedOwner = Cast<T>(GetOwner());
 	if (CastedOwner)
 	{
 		OnActionActive.BindUObject(CastedOwner, OnActionActiveFunction);
-		OnActionFinished.BindUObject(CastedOwner, OnActionFinishedFunction);
 	}
-	PlayAnimMontage(AnimMontage);
+	
+	StartAction(AnimMontage);
 }
 
 template <class T>
@@ -61,5 +68,6 @@ void UActionMontageComponent::BeginAction(UAnimMontage* AnimMontage, void(T::* O
 		OnActionActive.BindUObject(CastedOwner, OnActionActiveFunction);
 		OnActionFinished.BindUObject(CastedOwner, OnActionFinishedFunction);
 	}
-	PlayAnimMontage(AnimMontage);
+	
+	StartAction(AnimMontage);
 }

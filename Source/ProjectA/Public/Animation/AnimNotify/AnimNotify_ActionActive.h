@@ -4,13 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimNotifies/AnimNotify.h"
-#include "ActionActive.generated.h"
+#include "AnimNotify_ActionActive.generated.h"
 
-
-class UAnimNotify_PlaySound;
-
-UCLASS()
-class PROJECTA_API UActionActive : public UAnimNotify
+UCLASS(meta=(DisplayName="Active Action"))
+class PROJECTA_API UAnimNotify_ActionActive : public UAnimNotify
 {
 	GENERATED_BODY()
 	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;

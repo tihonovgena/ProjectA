@@ -149,6 +149,7 @@ void APlayerCharacter::SwitchWeapon()
 {
 	GetActionMontageComponent()->BeginAction(
 		WeaponComponent->GetEquipWeaponAnimMontage(),
+		&APlayerCharacter::OnStartSwitchWeapon,
 		&APlayerCharacter::OnSwitchWeapon,
 		&APlayerCharacter::OnFinishSwitchWeapon);
 }
@@ -158,9 +159,17 @@ void APlayerCharacter::OnSwitchWeapon()
 	WeaponComponent->SwitchWeapon();
 }
 
+void APlayerCharacter::OnStartSwitchWeapon()
+{
+	WeaponComponent->StopAttack();
+}
+
 void APlayerCharacter::OnFinishSwitchWeapon()
 {
-	WeaponComponent->FinishSwitchWeapon();
+	if (IsValid(GetNearestEnemy()))
+	{
+		WeaponComponent->StartAttack();
+	}
 }
 
 void APlayerCharacter::SetupMappingContext() const
