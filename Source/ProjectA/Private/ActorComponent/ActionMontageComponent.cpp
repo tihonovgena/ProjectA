@@ -57,11 +57,14 @@ void UActionMontageComponent::StartAction(UAnimMontage* AnimMontage)
 	GetWorld()->GetTimerManager().SetTimer(AnimMontageTimerHandle, this, &UActionMontageComponent::FinishAction, AnimMontage->GetPlayLength(), false, -1);
 	
 	PlayAnimMontage(AnimMontage);
+
+	HasCurrentAction = true;
 }
 
 void UActionMontageComponent::FinishAction()
 {
 	OnFinishedActionMontage();
+	HasCurrentAction = false;
 }
 
 void UActionMontageComponent::PlayAnimMontage(UAnimMontage* AnimMontage)
@@ -72,6 +75,26 @@ void UActionMontageComponent::PlayAnimMontage(UAnimMontage* AnimMontage)
 	{
 		ActionMontageInterface->PlayActionMontage(AnimMontage);
 	}
+}
+
+bool UActionMontageComponent::CanStartNewAction(bool bInterruptCurrentAction)
+{
+	if (HasCurrentAction)
+	{
+		if (bInterruptCurrentAction)
+		{
+			return true;
+		}
+		return false;
+	}
+
+	return  true;
+	
+}
+
+void UActionMontageComponent::InterruptCurrentAction()
+{
+	
 }
 
 

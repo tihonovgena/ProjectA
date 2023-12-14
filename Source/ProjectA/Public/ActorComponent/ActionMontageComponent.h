@@ -21,10 +21,10 @@ public:
 	UActionMontageComponent();
 	
 	template <class T>
-	void BeginAction(UAnimMontage* AnimMontage, void(T::* OnActionActiveFunction)());
+	void BeginAction(UAnimMontage* AnimMontage, void(T::* OnActionActiveFunction)(), bool bInterruptCurrentAction = false);
 
 	template <class T>
-	void BeginAction(UAnimMontage* AnimMontage, void(T::* OnActionStartedFunction)(), void(T::* OnActionActiveFunction)(), void(T::* OnActionFinishedFunction)());
+	void BeginAction(UAnimMontage* AnimMontage, void(T::* OnActionStartedFunction)(), void(T::* OnActionActiveFunction)(), void(T::* OnActionFinishedFunction)(), bool bInterruptCurrentAction= false);
 
 	void OnStartedActionMontage();
 	void OnActiveActionMontage();
@@ -41,14 +41,20 @@ private:
 	void StartAction(UAnimMontage* AnimMontage);
 	void FinishAction();
 	void PlayAnimMontage(UAnimMontage* AnimMontage);
+	bool CanStartNewAction(bool bInterruptCurrentAction);
+	void InterruptCurrentAction();
+	
+	bool HasCurrentAction;
 
 	FTimerHandle AnimMontageTimerHandle;
 
 };
 
 template <class T>
-void UActionMontageComponent::BeginAction(UAnimMontage* AnimMontage, void(T::* OnActionActiveFunction)())
+void UActionMontageComponent::BeginAction(UAnimMontage* AnimMontage, void(T::* OnActionActiveFunction)(), bool bInterruptCurrentAction)
 {
+	if (!CanStartNewAction(bInterruptCurrentAction)) return; 
+	
 	T* CastedOwner = Cast<T>(GetOwner());
 	if (CastedOwner)
 	{
@@ -59,8 +65,10 @@ void UActionMontageComponent::BeginAction(UAnimMontage* AnimMontage, void(T::* O
 }
 
 template <class T>
-void UActionMontageComponent::BeginAction(UAnimMontage* AnimMontage, void(T::* OnActionStartedFunction)(), void(T::* OnActionActiveFunction)(), void(T::* OnActionFinishedFunction)())
+void UActionMontageComponent::BeginAction(UAnimMontage* AnimMontage, void(T::* OnActionStartedFunction)(), void(T::* OnActionActiveFunction)(), void(T::* OnActionFinishedFunction)(), bool bInterruptCurrentAction)
 {
+	if (!CanStartNewAction(bInterruptCurrentAction)) return;
+	
 	T* CastedOwner = Cast<T>(GetOwner());
 	if (CastedOwner)
 	{
