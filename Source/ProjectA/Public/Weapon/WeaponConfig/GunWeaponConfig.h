@@ -3,12 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Struct/WeaponAmmoStruct.h"
 #include "Weapon/WeaponConfig/BaseWeaponConfig.h"
 #include "GunWeaponConfig.generated.h"
 
-/**
- * 
- */
 UCLASS(Abstract)
 class PROJECTA_API UGunWeaponConfig : public UBaseWeaponConfig
 {
@@ -23,4 +21,7 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category="Shoot")
 	float FireRate = 0.5f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "WeaponAmmo")
+	FWeaponAmmo DefaultWeaponAmmo;
 };

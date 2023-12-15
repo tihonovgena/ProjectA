@@ -18,5 +18,5 @@ public:
 	ULauncherWeaponConfig* GetLauncherWeaponConfig();
 	
 protected:
-	virtual void MakeShot() override;
+	virtual void Shot() override;
 };

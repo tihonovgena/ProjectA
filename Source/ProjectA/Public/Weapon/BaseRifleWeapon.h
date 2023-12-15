@@ -20,7 +20,7 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-	virtual void MakeShot() override;
+	virtual void Shot() override;
 	
 private:
 	bool MakeShotTrace(FHitResult& HitResult, FVector& StartTrace, FVector& EndTrace);

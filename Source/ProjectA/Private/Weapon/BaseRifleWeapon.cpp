@@ -24,7 +24,7 @@ void ABaseRifleWeapon::BeginPlay()
 	Super::BeginPlay();
 }
 
-void ABaseRifleWeapon::MakeShot()
+void ABaseRifleWeapon::Shot()
 {
 	if(!GetWorld()) return;
 
@@ -44,6 +44,7 @@ void ABaseRifleWeapon::MakeShot()
 	{
 		DrawDebugLine(GetWorld(), StartTrace, EndTrace, FColor::Red, false, 2.0f, 0, 2.0f);
 	}
+	
 }
 
 bool ABaseRifleWeapon::MakeShotTrace(FHitResult& HitResult, FVector& StartTrace, FVector& EndTrace)

@@ -30,12 +30,63 @@ UGunWeaponConfig* ABaseGunWeapon::GetGunWeaponConfig()
 void ABaseGunWeapon::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	SetupWeaponAmmo();
+	
+}
+
+void ABaseGunWeapon::WeaponReload()
+{
+	if (CanBeReloaded())
+	{
+		WeaponAmmoStruct.Ammo = GetGunWeaponConfig()->DefaultWeaponAmmo.Ammo;
+		WeaponAmmoStruct.Clips--;
+		UE_LOG(LogTemp, Display, TEXT("Weapon realoaded"))
+		
+	}
+}
+
+bool ABaseGunWeapon::HasAmmo() const
+{
+	return WeaponAmmoStruct.Ammo > 0;
+}
+
+bool ABaseGunWeapon::HasClips() const
+{
+	if (AreClipsInfinity())
+	{
+		return true;
+	}
+	
+	return WeaponAmmoStruct.Clips > 0;
+	
+}
+
+bool ABaseGunWeapon::AreClipsInfinity() const
+{
+	return WeaponAmmoStruct.bInfinityClips;
+}
+
+bool ABaseGunWeapon::CanBeReloaded() const
+{
+	return HasClips();
+}
+
+void ABaseGunWeapon::SetupWeaponAmmo()
+{
+	WeaponAmmoStruct = GetGunWeaponConfig()->DefaultWeaponAmmo;
 }
 
 void ABaseGunWeapon::StartAttack()
 {
-	GetWorldTimerManager().SetTimer
-	(ShootTimer,this, &ABaseGunWeapon::MakeShot, GetGunWeaponConfig()->FireRate, true, -1);
+	if (HasAmmo())
+	{
+		GetWorldTimerManager().SetTimer(ShootTimer,this, &ABaseGunWeapon::MakeShot, GetGunWeaponConfig()->FireRate, true, -1);
+	}
+	else
+	{
+		WeaponReload();
+	}
 }
 
 void ABaseGunWeapon::StopAttack()
@@ -43,8 +94,25 @@ void ABaseGunWeapon::StopAttack()
 	GetWorldTimerManager().ClearTimer(ShootTimer);
 }
 
+void ABaseGunWeapon::Shot()
+{
+	
+}
+
 void ABaseGunWeapon::MakeShot()
 {
+	if (!HasAmmo())
+	{
+		StopAttack();
+		WeaponReload();
+	}
+	else
+	{
+		Shot();
+		WeaponAmmoStruct.Ammo--;
+
+		UE_LOG(LogTemp, Display, TEXT("Ammo %s"), *FString::FromInt(WeaponAmmoStruct.Ammo));
+	}
 	
 }
 
