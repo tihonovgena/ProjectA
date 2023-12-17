@@ -26,14 +26,14 @@ protected:
 
 #pragma region Ammo
 public:
-	void WeaponReload();
+	virtual void ReloadWeapon() override;
+	virtual bool CanBeReloaded() override;
 	
 protected:
 	bool HasAmmo() const;
 	bool HasClips() const;
 	bool AreClipsInfinity() const;
-	bool CanBeReloaded() const;
-	
+
 private:
 	void SetupWeaponAmmo();
 	

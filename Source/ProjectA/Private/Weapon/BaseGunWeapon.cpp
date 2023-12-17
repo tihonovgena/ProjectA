@@ -35,7 +35,7 @@ void ABaseGunWeapon::BeginPlay()
 	
 }
 
-void ABaseGunWeapon::WeaponReload()
+void ABaseGunWeapon::ReloadWeapon()
 {
 	if (CanBeReloaded())
 	{
@@ -67,7 +67,7 @@ bool ABaseGunWeapon::AreClipsInfinity() const
 	return WeaponAmmoStruct.bInfinityClips;
 }
 
-bool ABaseGunWeapon::CanBeReloaded() const
+bool ABaseGunWeapon::CanBeReloaded()
 {
 	return HasClips();
 }
@@ -85,7 +85,7 @@ void ABaseGunWeapon::StartAttack()
 	}
 	else
 	{
-		WeaponReload();
+		NeedReload.Broadcast();
 	}
 }
 
@@ -104,7 +104,7 @@ void ABaseGunWeapon::MakeShot()
 	if (!HasAmmo())
 	{
 		StopAttack();
-		WeaponReload();
+		NeedReload.Broadcast();
 	}
 	else
 	{

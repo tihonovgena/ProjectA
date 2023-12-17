@@ -20,4 +20,5 @@ class PROJECTA_API IWeaponComponentInterface
 
 public:
 	virtual USceneComponent* GetWeaponComponentOwnerMesh();
+	virtual bool CanContinueAttack();
 };

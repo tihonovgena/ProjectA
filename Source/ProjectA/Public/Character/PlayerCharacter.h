@@ -110,20 +110,24 @@ protected:
 #pragma region Weapon
 public:
 	virtual USceneComponent* GetWeaponComponentOwnerMesh() override;
-	
-	UFUNCTION()
-	void OnSwitchWeapon();
-	UFUNCTION()
-	void OnStartSwitchWeapon();
-	UFUNCTION()
-	void OnFinishSwitchWeapon();
+	virtual bool CanContinueAttack() override;
+	UWeaponComponent* GetWeaponComponent();
 	
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Weapon", meta = (AllowPrivateAccess = "true"))
 	UWeaponComponent* WeaponComponent;
+
+	UFUNCTION()
+	void OnWeaponNeedReload();
 	
 	void SwitchWeapon();
 
 #pragma endregion
+
+#pragma region Action
+	virtual void OnStartedActionMontage() override;
+	virtual void OnFinishedActionMontage() override;
+	
+#pragma endregion 
 	
 };

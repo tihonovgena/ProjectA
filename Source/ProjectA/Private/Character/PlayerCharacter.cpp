@@ -14,6 +14,7 @@
 #include "ActorComponent/WeaponComponent.h"
 #include "ActorComponent/EnemyDetectorComponent.h"
 #include "ActorComponent/LookAtTargetComponent.h"
+#include "Character/CharacterConfig/CharacterConfig.h"
 
 DEFINE_LOG_CATEGORY(PlayerCharacter);
 
@@ -49,6 +50,7 @@ void APlayerCharacter::BeginPlay()
 	check(EnemyDetectorComponent);
 	check(LookAtTargetComponent);
 
+	WeaponComponent->WeaponNeedReload.AddUObject(this, &APlayerCharacter::OnWeaponNeedReload);
 	EnemyDetectorComponent->OnChangedNearestEnemy.AddUObject(this, &APlayerCharacter::OnChangedNearestEnemy);
 	
 }
@@ -145,26 +147,46 @@ USceneComponent* APlayerCharacter::GetWeaponComponentOwnerMesh()
 	return GetMesh();
 }
 
+bool APlayerCharacter::CanContinueAttack()
+{
+	return IsValid(GetNearestEnemy());
+}
+
+UWeaponComponent* APlayerCharacter::GetWeaponComponent()
+{
+	return WeaponComponent;
+}
+
+void APlayerCharacter::OnWeaponNeedReload()
+{
+	const EWeaponType EquipWeaponType = GetWeaponComponent()->GetEquipWeaponType();
+	UAnimMontage* ReloadWeaponMontage = CharacterConfig->GetReloadWeaponAnimMontage(EquipWeaponType);
+	
+	GetActionMontageComponent()->BeginAction(
+		ReloadWeaponMontage,
+		WeaponComponent,
+		&UWeaponComponent::ReloadWeapon,
+		true);
+}
+
 void APlayerCharacter::SwitchWeapon()
 {
+	const EWeaponType EquipWeaponType = GetWeaponComponent()->GetEquipWeaponType();
+	UAnimMontage* SwitchWeaponMontage = CharacterConfig->GetSwitchWeaponAnimMontage(EquipWeaponType);
+	
 	GetActionMontageComponent()->BeginAction(
-		WeaponComponent->GetEquipWeaponAnimMontage(),
-		&APlayerCharacter::OnStartSwitchWeapon,
-		&APlayerCharacter::OnSwitchWeapon,
-		&APlayerCharacter::OnFinishSwitchWeapon);
+		SwitchWeaponMontage,
+		WeaponComponent,
+		&UWeaponComponent::SwitchWeapon,
+		true);
 }
 
-void APlayerCharacter::OnSwitchWeapon()
-{
-	WeaponComponent->SwitchWeapon();
-}
-
-void APlayerCharacter::OnStartSwitchWeapon()
+void APlayerCharacter::OnStartedActionMontage()
 {
 	WeaponComponent->StopAttack();
 }
 
-void APlayerCharacter::OnFinishSwitchWeapon()
+void APlayerCharacter::OnFinishedActionMontage()
 {
 	if (IsValid(GetNearestEnemy()))
 	{

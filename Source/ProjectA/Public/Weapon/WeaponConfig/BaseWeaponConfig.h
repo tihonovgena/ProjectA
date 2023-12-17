@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
+#include "Weapon/WeaponConfig/Enum/WeaponType.h"
 #include "BaseWeaponConfig.generated.h"
 
 class APAWeapon;
@@ -20,7 +21,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	TSubclassOf<APAWeapon> WeaponClass;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Animation")
-	TObjectPtr<UAnimMontage> EquipWeaponAnimMontage; 
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	EWeaponType WeaponType = EWeaponType::None;
 	
 };

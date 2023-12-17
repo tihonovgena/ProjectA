@@ -4,12 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Weapon/WeaponConfig/Enum/WeaponType.h"
 #include "WeaponComponent.generated.h"
 
+class IWeaponComponentInterface;
 class UBaseWeaponConfig;
 class APAWeapon;
 
 DECLARE_LOG_CATEGORY_EXTERN(WeaponComponent, Display, All);
+
+DECLARE_MULTICAST_DELEGATE(FOnWeaponNeedReloadSignature)
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class PROJECTA_API UWeaponComponent : public UActorComponent
@@ -20,12 +24,25 @@ public:
 	UWeaponComponent();
 	
 	AController* GetOwnerController() const;
-	UAnimMontage* GetEquipWeaponAnimMontage();
+	EWeaponType GetEquipWeaponType();
+	EWeaponType GetWeaponType() const;
+
+	UFUNCTION()
+	void StartAttack();
 	
-	void StartAttack() const;
-	void StopAttack() const;
+	UFUNCTION()
+	void StopAttack();
+	
+	UFUNCTION()
 	void SwitchWeapon();
+	
+	UFUNCTION()
 	void FinishSwitchWeapon();
+
+	UFUNCTION()
+	void ReloadWeapon();
+
+	FOnWeaponNeedReloadSignature WeaponNeedReload;
 	
 protected:
 	virtual void BeginPlay() override;
@@ -33,7 +50,8 @@ protected:
 	
 	void SpawnWeapons();
 	
-	USceneComponent* GetOwnerMesh() const;
+	USceneComponent* GetOwnerMesh();
+	IWeaponComponentInterface* GetOwnerWeaponInterface();
 
 	UPROPERTY()
 	TObjectPtr<AActor> ComponentOwner;
@@ -48,10 +66,15 @@ protected:
 	TObjectPtr<APAWeapon> ArmedWeapon;
 
 private:
-	APAWeapon* SpawnWeapon(TSubclassOf<APAWeapon> WeaponClass) const;
+	APAWeapon* SpawnWeapon(TSubclassOf<APAWeapon> WeaponClass);
 	
 	void EquipWeapon(APAWeapon* Weapon);
-	void AttachWeaponToArmorySocket(APAWeapon* Weapon) const;
+	void AttachWeaponToArmorySocket(APAWeapon* Weapon);
+	void BindWeaponDelegates(APAWeapon* Weapon);
+	void UnbindWeaponDelegates(APAWeapon* Weapon);
+	
+	UFUNCTION()
+	void OnWeaponNeedReload();
 	
 	int32 GetNextWeaponIndex() const;
 

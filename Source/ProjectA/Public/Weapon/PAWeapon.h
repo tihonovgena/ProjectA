@@ -4,10 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "WeaponConfig/Enum/WeaponType.h"
 #include "PAWeapon.generated.h"
 
 class UBaseWeaponAction;
 class UBaseWeaponConfig;
+
+DECLARE_MULTICAST_DELEGATE(FOnNeedReloadSignature);
 
 UCLASS(Abstract)
 class PROJECTA_API APAWeapon : public AActor
@@ -17,11 +20,15 @@ class PROJECTA_API APAWeapon : public AActor
 public:	
 	virtual void StartAttack();
 	virtual void StopAttack();
-	
-	UBaseWeaponConfig* GetWeaponConfig();
-	UAnimMontage* GetEquipWeaponAnimMontage();
+	virtual void ReloadWeapon();
+	virtual bool CanBeReloaded();
 	
 	void AttachWeaponToArmedSocket(USceneComponent* OwnerComponent);
+	
+	UBaseWeaponConfig* GetWeaponConfig();
+	EWeaponType GetWeaponType();
+
+	FOnNeedReloadSignature NeedReload;
 
 protected:
 	virtual void BeginPlay() override;

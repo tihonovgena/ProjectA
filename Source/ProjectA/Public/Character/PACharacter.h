@@ -7,6 +7,7 @@
 #include "Interface/ActionMontageInterface.h"
 #include "PACharacter.generated.h"
 
+class UCharacterConfig;
 class UActionMontageComponent;
 class UHealthComponent;
 
@@ -49,10 +50,18 @@ protected:
 #pragma region ActionMontage
 public:
 	UActionMontageComponent* GetActionMontageComponent();
+	
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	UCharacterConfig* GetCharacterConfig();
+	
 	virtual void PlayActionMontage(UAnimMontage* AnimMontage) override;
 	virtual void OnStartedActionMontage() override;
 	virtual void OnActiveActionMontage() override;
 	virtual void OnFinishedActionMontage() override;
+
+protected:
+	UPROPERTY(EditDefaultsOnly, Category = "Action")
+	UCharacterConfig* CharacterConfig = nullptr;
 	
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))

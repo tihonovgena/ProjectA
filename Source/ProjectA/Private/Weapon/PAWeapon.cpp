@@ -14,14 +14,27 @@ void APAWeapon::StopAttack()
 	
 }
 
+void APAWeapon::ReloadWeapon()
+{
+}
+
+bool APAWeapon::CanBeReloaded()
+{
+	return false;
+}
+
 UBaseWeaponConfig* APAWeapon::GetWeaponConfig()
 {
 	return WeaponConfig;
 }
 
-UAnimMontage* APAWeapon::GetEquipWeaponAnimMontage()
+EWeaponType APAWeapon::GetWeaponType()
 {
-	return WeaponConfig->EquipWeaponAnimMontage;
+	if (WeaponConfig)
+	{
+		return WeaponConfig->WeaponType;
+	}
+	return EWeaponType::None;
 }
 
 void APAWeapon::AttachWeaponToArmedSocket(USceneComponent* OwnerComponent)
@@ -33,6 +46,7 @@ void APAWeapon::AttachWeaponToArmedSocket(USceneComponent* OwnerComponent)
 void APAWeapon::BeginPlay()
 {
 	Super::BeginPlay();
+	check(GetWeaponType() != EWeaponType::None)
 	
 }
 

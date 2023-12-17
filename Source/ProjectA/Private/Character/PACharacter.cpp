@@ -43,6 +43,11 @@ UActionMontageComponent* APACharacter::GetActionMontageComponent()
 	return ActionMontageComponent;
 }
 
+UCharacterConfig* APACharacter::GetCharacterConfig()
+{
+	return CharacterConfig;
+}
+
 void APACharacter::PlayActionMontage(UAnimMontage* AnimMontage)
 {
 	PlayAnimMontage(AnimMontage);

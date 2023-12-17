@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "ActionMontageComponent.generated.h"
 
+class IActionMontageInterface;
 DECLARE_DELEGATE(FOnActionStartedSignature);
 DECLARE_DELEGATE(FOnActionActiveSignature);
 DECLARE_DELEGATE(FOnActionFinishedSignature);
@@ -21,10 +22,10 @@ public:
 	UActionMontageComponent();
 	
 	template <class T>
-	void BeginAction(UAnimMontage* AnimMontage, void(T::* OnActionActiveFunction)(), bool bInterruptCurrentAction = false);
+	void BeginAction(UAnimMontage* AnimMontage, T* FunctionsOwner, void(T::* OnActionActiveFunction)(), bool bInterruptCurrentAction = false);
 
 	template <class T>
-	void BeginAction(UAnimMontage* AnimMontage, void(T::* OnActionStartedFunction)(), void(T::* OnActionActiveFunction)(), void(T::* OnActionFinishedFunction)(), bool bInterruptCurrentAction= false);
+	void BeginAction(UAnimMontage* AnimMontage, T* FunctionsOwner, void(T::* OnActionStartedFunction)(), void(T::* OnActionActiveFunction)(), void(T::* OnActionFinishedFunction)(), bool bInterruptCurrentAction= false);
 
 	void OnStartedActionMontage();
 	void OnActiveActionMontage();
@@ -43,6 +44,8 @@ private:
 	void PlayAnimMontage(UAnimMontage* AnimMontage);
 	bool CanStartNewAction(bool bInterruptCurrentAction);
 	void InterruptCurrentAction();
+
+	IActionMontageInterface* GetOwnerActionMontageInterface();
 	
 	bool HasCurrentAction;
 
@@ -51,30 +54,28 @@ private:
 };
 
 template <class T>
-void UActionMontageComponent::BeginAction(UAnimMontage* AnimMontage, void(T::* OnActionActiveFunction)(), bool bInterruptCurrentAction)
+void UActionMontageComponent::BeginAction(UAnimMontage* AnimMontage, T* FunctionsOwner, void(T::* OnActionActiveFunction)(), bool bInterruptCurrentAction)
 {
 	if (!CanStartNewAction(bInterruptCurrentAction)) return; 
 	
-	T* CastedOwner = Cast<T>(GetOwner());
-	if (CastedOwner)
+	if (FunctionsOwner)
 	{
-		OnActionActive.BindUObject(CastedOwner, OnActionActiveFunction);
+		OnActionActive.BindUObject(FunctionsOwner, OnActionActiveFunction);
 	}
 	
 	StartAction(AnimMontage);
 }
 
 template <class T>
-void UActionMontageComponent::BeginAction(UAnimMontage* AnimMontage, void(T::* OnActionStartedFunction)(), void(T::* OnActionActiveFunction)(), void(T::* OnActionFinishedFunction)(), bool bInterruptCurrentAction)
+void UActionMontageComponent::BeginAction(UAnimMontage* AnimMontage, T* FunctionsOwner, void(T::* OnActionStartedFunction)(), void(T::* OnActionActiveFunction)(), void(T::* OnActionFinishedFunction)(), bool bInterruptCurrentAction)
 {
 	if (!CanStartNewAction(bInterruptCurrentAction)) return;
 	
-	T* CastedOwner = Cast<T>(GetOwner());
-	if (CastedOwner)
+	if (FunctionsOwner)
 	{
-		OnActionStarted.BindUObject(CastedOwner, OnActionStartedFunction);
-		OnActionActive.BindUObject(CastedOwner, OnActionActiveFunction);
-		OnActionFinished.BindUObject(CastedOwner, OnActionFinishedFunction);
+		OnActionStarted.BindUObject(FunctionsOwner, OnActionStartedFunction);
+		OnActionActive.BindUObject(FunctionsOwner, OnActionActiveFunction);
+		OnActionFinished.BindUObject(FunctionsOwner, OnActionFinishedFunction);
 	}
 	
 	StartAction(AnimMontage);

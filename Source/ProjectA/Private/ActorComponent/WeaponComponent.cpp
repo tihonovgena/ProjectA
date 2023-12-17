@@ -28,6 +28,12 @@ AController* UWeaponComponent::GetOwnerController() const
 	}
 }
 
+EWeaponType UWeaponComponent::GetEquipWeaponType()
+{
+	if (Weapons.IsEmpty() || !Weapons[GetNextWeaponIndex()]) return EWeaponType::None;
+	return Weapons[GetNextWeaponIndex()]->GetWeaponType();
+}
+
 
 void UWeaponComponent::BeginPlay()
 {
@@ -66,7 +72,7 @@ void UWeaponComponent::SpawnWeapons()
 	EquipWeapon(Weapons[0]);
 }
 
-APAWeapon* UWeaponComponent::SpawnWeapon(TSubclassOf<APAWeapon> WeaponClass) const
+APAWeapon* UWeaponComponent::SpawnWeapon(TSubclassOf<APAWeapon> WeaponClass)
 {
 	if (!GetWorld() || !IsValid(WeaponClass) || !IsValid(GetOwnerMesh()))
 	{
@@ -96,16 +102,37 @@ void UWeaponComponent::EquipWeapon(APAWeapon* Weapon)
 		{
 			ArmedWeapon->StopAttack();
 			AttachWeaponToArmorySocket(ArmedWeapon);
+			UnbindWeaponDelegates(ArmedWeapon);
 		}
 		ArmedWeapon = Weapon;
-		Weapon->AttachWeaponToArmedSocket(GetOwnerMesh());
+		ArmedWeapon->AttachWeaponToArmedSocket(GetOwnerMesh());
+		BindWeaponDelegates(ArmedWeapon);
 	}
 }
 
-void UWeaponComponent::AttachWeaponToArmorySocket(APAWeapon* Weapon) const
+void UWeaponComponent::AttachWeaponToArmorySocket(APAWeapon* Weapon)
 {
 	const FAttachmentTransformRules AttachmentRules = FAttachmentTransformRules(EAttachmentRule::SnapToTarget, false);
 	Weapon->AttachToComponent(GetOwnerMesh(), AttachmentRules, WeaponArmorySocketName);
+}
+
+inline void UWeaponComponent::BindWeaponDelegates(APAWeapon* Weapon)
+{
+	Weapon->NeedReload.AddUObject(this, &UWeaponComponent::OnWeaponNeedReload);
+}
+
+void UWeaponComponent::UnbindWeaponDelegates(APAWeapon* Weapon)
+{
+	Weapon->NeedReload.Clear();
+}
+
+void UWeaponComponent::OnWeaponNeedReload()
+{
+	if (IsValid(ArmedWeapon) && ArmedWeapon->CanBeReloaded())
+	{
+		WeaponNeedReload.Broadcast();
+	}
+	
 }
 
 int32 UWeaponComponent::GetNextWeaponIndex() const
@@ -115,7 +142,7 @@ int32 UWeaponComponent::GetNextWeaponIndex() const
 	return Weapons.IsValidIndex(ArmedWeaponIndex + 1) ? ArmedWeaponIndex + 1 : 0;
 }
 
-void UWeaponComponent::StartAttack() const
+void UWeaponComponent::StartAttack()
 {
 	if (IsValid(ArmedWeapon))
 	{
@@ -123,7 +150,7 @@ void UWeaponComponent::StartAttack() const
 	}
 }
 
-void UWeaponComponent::StopAttack() const
+void UWeaponComponent::StopAttack()
 {
 	if (IsValid(ArmedWeapon))
 	{
@@ -131,10 +158,13 @@ void UWeaponComponent::StopAttack() const
 	}
 }
 
-UAnimMontage* UWeaponComponent::GetEquipWeaponAnimMontage()
+EWeaponType UWeaponComponent::GetWeaponType() const
 {
-	if (Weapons.IsEmpty()) return nullptr;
-	return Weapons[GetNextWeaponIndex()]->GetEquipWeaponAnimMontage();
+	if (ArmedWeapon)
+	{
+		return ArmedWeapon->GetWeaponType();
+	}
+	return EWeaponType::None;
 }
 
 void UWeaponComponent::SwitchWeapon()
@@ -147,13 +177,25 @@ void UWeaponComponent::SwitchWeapon()
 
 void UWeaponComponent::FinishSwitchWeapon()
 {
+	IWeaponComponentInterface* WeaponComponentInterface = GetOwnerWeaponInterface();
+	if (WeaponComponentInterface && WeaponComponentInterface->CanContinueAttack())
+	{
+		StartAttack();
+	}
 	
 }
 
-USceneComponent* UWeaponComponent::GetOwnerMesh() const
+void UWeaponComponent::ReloadWeapon()
 {
-	if (!GetOwner()) return nullptr;
-	IWeaponComponentInterface* WeaponComponentInterface = Cast<IWeaponComponentInterface>(GetOwner());
+	if (IsValid(ArmedWeapon))
+	{
+		ArmedWeapon->ReloadWeapon();
+	}
+}
+
+USceneComponent* UWeaponComponent::GetOwnerMesh()
+{
+	IWeaponComponentInterface* WeaponComponentInterface = GetOwnerWeaponInterface();
 	if (WeaponComponentInterface)
 	{
 		return WeaponComponentInterface->GetWeaponComponentOwnerMesh();
@@ -163,4 +205,15 @@ USceneComponent* UWeaponComponent::GetOwnerMesh() const
 		return nullptr;
 	}
 	
+}
+
+IWeaponComponentInterface* UWeaponComponent::GetOwnerWeaponInterface()
+{
+	if (!GetOwner()) return nullptr;
+	IWeaponComponentInterface* WeaponComponentInterface = Cast<IWeaponComponentInterface>(GetOwner());
+	if (WeaponComponentInterface)
+	{
+		return WeaponComponentInterface;
+	}
+	return nullptr;
 }

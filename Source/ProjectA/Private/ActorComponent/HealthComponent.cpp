@@ -89,22 +89,22 @@ void UHealthComponent::OnTakeAnyDamage(AActor* DamagedActor, float Damage, const
 	const float NewHealth = FMath::Clamp(Health - Damage, 0.0, MaxHealth);
 	SetNewHealth(NewHealth);
 	
-	UE_LOG(HealthComponent, Display, TEXT("%s take %f damage"), *ComponentOwner->GetName(), Damage)
+	UE_LOG(HealthComponent, Display, TEXT("%s take %f damage"), *ComponentOwner->GetName(), Damage);
 
 	if (DamageType && DamageType->IsA<UPADamageType>())
 	{
 		switch (Cast<UPADamageType>(DamageType)->GetDamageType())
 		{
 		case EDamageType::Physical:
-			UE_LOG(HealthComponent, Display, TEXT("Physical"))
+			UE_LOG(HealthComponent, Display, TEXT("Physical"));
 			break;
 			
 		case EDamageType::Fire:
-			UE_LOG(HealthComponent, Display, TEXT("Fire"))
+			UE_LOG(HealthComponent, Display, TEXT("Fire"));
 			break;
 
 		case EDamageType::Poison:
-			UE_LOG(HealthComponent, Display, TEXT("Poison"))
+			UE_LOG(HealthComponent, Display, TEXT("Poison"));
 			break;
 		
 		default: ;

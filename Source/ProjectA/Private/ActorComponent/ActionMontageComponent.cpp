@@ -14,6 +14,7 @@ UActionMontageComponent::UActionMontageComponent()
 
 void UActionMontageComponent::OnStartedActionMontage()
 {
+	GetOwnerActionMontageInterface()->OnStartedActionMontage();
 	if (OnActionStarted.IsBound())
 	{
 		OnActionStarted.Execute();
@@ -33,6 +34,7 @@ void UActionMontageComponent::OnActiveActionMontage()
 void UActionMontageComponent::OnFinishedActionMontage()
 {
 	GetWorld()->GetTimerManager().ClearTimer(AnimMontageTimerHandle);
+	GetOwnerActionMontageInterface()->OnFinishedActionMontage();
 	
 	if (OnActionFinished.IsBound())
 	{
@@ -95,6 +97,15 @@ bool UActionMontageComponent::CanStartNewAction(bool bInterruptCurrentAction)
 void UActionMontageComponent::InterruptCurrentAction()
 {
 	
+}
+
+IActionMontageInterface* UActionMontageComponent::GetOwnerActionMontageInterface()
+{
+	if (GetOwner() && Cast<IActionMontageInterface>(GetOwner()))
+	{
+		return Cast<IActionMontageInterface>(GetOwner());
+	}
+	return nullptr;
 }
 
 
