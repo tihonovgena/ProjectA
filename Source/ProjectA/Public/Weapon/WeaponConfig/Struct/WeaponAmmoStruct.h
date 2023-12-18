@@ -1,6 +1,5 @@
 #pragma once
 
-#include "CoreMinimal.h"
 #include "WeaponAmmoStruct.generated.h"
 
 USTRUCT(BlueprintType)
@@ -8,7 +7,7 @@ struct FWeaponAmmo
 {
 	GENERATED_BODY()
 	
-	UPROPERTY(EditDefaultsOnly, Category = "Ammo", meta = (ClampMin = 0))
+	UPROPERTY(EditDefaultsOnly, Category = "Ammo", meta = (ClampMin = 1))
 	int32 Ammo = 8;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Ammo", meta = (EditCondition = "!bInfinityClips" , ClampMin = 0))
