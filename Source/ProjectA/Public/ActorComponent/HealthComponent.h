@@ -38,6 +38,9 @@ public:
 	float GetMaxHealth() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Health")
+	float GetHealthPercent();
+
+	UFUNCTION(BlueprintCallable, Category = "Health")
 	bool IsDead();
 
 private:

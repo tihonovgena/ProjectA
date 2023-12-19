@@ -38,6 +38,11 @@ void APACharacter::OnHealthChanged(float Health)
 	
 }
 
+float APACharacter::GetHealthPercent()
+{
+	return HealthComponent->GetHealthPercent();
+}
+
 UActionMontageComponent* APACharacter::GetActionMontageComponent()
 {
 	return ActionMontageComponent;

@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Interface/ActionMontageInterface.h"
+#include "Interface/HealthComponentInterface.h"
 #include "PACharacter.generated.h"
 
 class UCharacterConfig;
@@ -12,7 +13,7 @@ class UActionMontageComponent;
 class UHealthComponent;
 
 UCLASS()
-class PROJECTA_API APACharacter : public ACharacter, public IActionMontageInterface
+class PROJECTA_API APACharacter : public ACharacter, public IActionMontageInterface, public IHealthComponentInterface
 {
 	GENERATED_BODY()
 
@@ -41,6 +42,7 @@ public:
 protected:
 	virtual void OnDeath();
 	virtual void OnHealthChanged(float Health);
+	virtual float GetHealthPercent() override;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Health", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UHealthComponent> HealthComponent;
