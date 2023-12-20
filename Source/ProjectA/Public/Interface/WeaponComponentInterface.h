@@ -6,6 +6,7 @@
 #include "UObject/Interface.h"
 #include "WeaponComponentInterface.generated.h"
 
+struct FWeaponAmmo;
 // This class does not need to be modified.
 UINTERFACE()
 class UWeaponComponentInterface : public UInterface
@@ -21,4 +22,6 @@ class PROJECTA_API IWeaponComponentInterface
 public:
 	virtual USceneComponent* GetWeaponComponentOwnerMesh();
 	virtual bool CanContinueAttack();
+	virtual bool GetWeaponAmmo(FWeaponAmmo& WeaponAmmo);
+	virtual bool GetWeaponDefaultAmmo(FWeaponAmmo& WeaponAmmo);
 };

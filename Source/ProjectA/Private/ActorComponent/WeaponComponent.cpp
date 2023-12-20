@@ -6,6 +6,7 @@
 #include "TimerManager.h"
 #include "DrawDebugHelpers.h"
 #include "Interface/WeaponComponentInterface.h"
+#include "Weapon/BaseGunWeapon.h"
 
 DEFINE_LOG_CATEGORY(WeaponComponent);
 
@@ -28,7 +29,28 @@ AController* UWeaponComponent::GetOwnerController() const
 	}
 }
 
-EWeaponType UWeaponComponent::GetEquipWeaponType()
+bool UWeaponComponent::GetWeaponAmmo(FWeaponAmmo& WeaponAmmo) const
+{
+	const ABaseGunWeapon* GunWeapon = Cast<ABaseGunWeapon>(ArmedWeapon);
+	if (IsValid(GunWeapon))
+	{
+		WeaponAmmo = GunWeapon->GetWeaponAmmo();
+		return true;
+	}
+	return false;
+}
+
+bool UWeaponComponent::GetWeaponDefaultAmmo(FWeaponAmmo& WeaponAmmo) const
+{
+	const ABaseGunWeapon* GunWeapon = Cast<ABaseGunWeapon>(ArmedWeapon);
+	if (IsValid(GunWeapon))
+	{
+		return GunWeapon->GetWeaponDefaultAmmo(WeaponAmmo);
+	}
+	return false;
+}
+
+EWeaponType UWeaponComponent::GetEquipWeaponType() const
 {
 	if (Weapons.IsEmpty() || !Weapons[GetNextWeaponIndex()]) return EWeaponType::None;
 	return Weapons[GetNextWeaponIndex()]->GetWeaponType();

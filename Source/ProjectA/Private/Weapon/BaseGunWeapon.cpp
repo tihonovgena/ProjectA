@@ -22,7 +22,7 @@ AController* ABaseGunWeapon::GetOwnerController()
 	
 }
 
-UGunWeaponConfig* ABaseGunWeapon::GetGunWeaponConfig()
+UGunWeaponConfig* ABaseGunWeapon::GetGunWeaponConfig() const
 {
 	return Cast<UGunWeaponConfig>(GetWeaponConfig());
 }
@@ -33,6 +33,21 @@ void ABaseGunWeapon::BeginPlay()
 	
 	SetupWeaponAmmo();
 	
+}
+
+FWeaponAmmo ABaseGunWeapon::GetWeaponAmmo() const
+{
+	return WeaponAmmoStruct;
+}
+
+ bool ABaseGunWeapon::GetWeaponDefaultAmmo(FWeaponAmmo& DefaultWeaponAmmo) const
+{
+	if (GetGunWeaponConfig())
+	{
+		DefaultWeaponAmmo = GetGunWeaponConfig()->DefaultWeaponAmmo;
+		return true;
+	}
+	return false;
 }
 
 void ABaseGunWeapon::ReloadWeapon()

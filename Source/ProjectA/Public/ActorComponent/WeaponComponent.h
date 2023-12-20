@@ -7,6 +7,7 @@
 #include "Weapon/WeaponConfig/Enum/WeaponType.h"
 #include "WeaponComponent.generated.h"
 
+struct FWeaponAmmo;
 class IWeaponComponentInterface;
 class UBaseWeaponConfig;
 class APAWeapon;
@@ -24,7 +25,9 @@ public:
 	UWeaponComponent();
 	
 	AController* GetOwnerController() const;
-	EWeaponType GetEquipWeaponType();
+	bool GetWeaponAmmo(FWeaponAmmo& WeaponAmmo) const;
+	bool GetWeaponDefaultAmmo(FWeaponAmmo& WeaponAmmo) const;
+	EWeaponType GetEquipWeaponType() const;
 	EWeaponType GetWeaponType() const;
 
 	UFUNCTION()

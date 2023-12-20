@@ -23,7 +23,7 @@ bool APAWeapon::CanBeReloaded()
 	return false;
 }
 
-UBaseWeaponConfig* APAWeapon::GetWeaponConfig()
+UBaseWeaponConfig* APAWeapon::GetWeaponConfig() const
 {
 	return WeaponConfig;
 }

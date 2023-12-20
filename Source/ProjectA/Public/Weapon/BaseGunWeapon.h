@@ -26,6 +26,8 @@ protected:
 
 #pragma region Ammo
 public:
+	FWeaponAmmo GetWeaponAmmo() const;
+	bool GetWeaponDefaultAmmo(FWeaponAmmo& DefaultWeaponAmmo) const;
 	virtual void ReloadWeapon() override;
 	virtual bool CanBeReloaded() override;
 	
@@ -54,7 +56,7 @@ protected:
 
 private:
 	virtual void MakeShot();
-	UGunWeaponConfig* GetGunWeaponConfig();
+	UGunWeaponConfig* GetGunWeaponConfig() const; 
 	FTimerHandle ShootTimer;
 	
 #pragma endregion 

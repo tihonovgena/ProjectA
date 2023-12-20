@@ -111,6 +111,8 @@ protected:
 public:
 	virtual USceneComponent* GetWeaponComponentOwnerMesh() override;
 	virtual bool CanContinueAttack() override;
+	virtual bool GetWeaponAmmo(FWeaponAmmo& WeaponAmmo) override;
+	virtual bool GetWeaponDefaultAmmo(FWeaponAmmo& WeaponAmmo) override;
 	UWeaponComponent* GetWeaponComponent();
 	
 private:

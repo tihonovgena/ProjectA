@@ -7,13 +7,13 @@ struct FWeaponAmmo
 {
 	GENERATED_BODY()
 	
-	UPROPERTY(EditDefaultsOnly, Category = "Ammo", meta = (ClampMin = 1))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Ammo", meta = (ClampMin = 1))
 	int32 Ammo = 8;
 	
-	UPROPERTY(EditDefaultsOnly, Category = "Ammo", meta = (EditCondition = "!bInfinityClips" , ClampMin = 0))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Ammo", meta = (EditCondition = "!bInfinityClips" , ClampMin = 0))
 	int32 Clips = 3;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Ammo")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Ammo")
 	bool bInfinityClips = false;
 	
 };

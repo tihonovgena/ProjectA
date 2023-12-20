@@ -152,6 +152,16 @@ bool APlayerCharacter::CanContinueAttack()
 	return IsValid(GetNearestEnemy());
 }
 
+bool APlayerCharacter::GetWeaponAmmo(FWeaponAmmo& WeaponAmmo)
+{
+	return WeaponComponent->GetWeaponAmmo(WeaponAmmo);
+}
+
+bool APlayerCharacter::GetWeaponDefaultAmmo(FWeaponAmmo& WeaponAmmo)
+{
+	return WeaponComponent->GetWeaponDefaultAmmo(WeaponAmmo);
+}
+
 UWeaponComponent* APlayerCharacter::GetWeaponComponent()
 {
 	return WeaponComponent;

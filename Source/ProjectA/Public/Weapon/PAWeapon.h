@@ -25,7 +25,7 @@ public:
 	
 	void AttachWeaponToArmedSocket(USceneComponent* OwnerComponent);
 	
-	UBaseWeaponConfig* GetWeaponConfig();
+	UBaseWeaponConfig* GetWeaponConfig() const;
 	EWeaponType GetWeaponType();
 
 	FOnNeedReloadSignature NeedReload;
