@@ -3,22 +3,25 @@
 
 #include "Item/Pickup/AmmoPickup.h"
 
+DEFINE_LOG_CATEGORY_STATIC(AmmoPickup, Log, All);
 
-// Sets default values
 AAmmoPickup::AAmmoPickup()
 {
-	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 }
 
-// Called when the game starts or when spawned
 void AAmmoPickup::BeginPlay()
 {
 	Super::BeginPlay();
 	
 }
 
-// Called every frame
+bool AAmmoPickup::PickUpItem(APawn* Pawn)
+{
+	UE_LOG(AmmoPickup, Log, TEXT("Ammo picked up"));
+	return true;
+}
+
 void AAmmoPickup::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);

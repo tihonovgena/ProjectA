@@ -19,11 +19,19 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
+	virtual bool PickUpItem(APawn* Pawn);
 
 public:
 	virtual void Tick(float DeltaTime) override;
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<USphereComponent> Collision;
+	TObjectPtr<USphereComponent> SphereCollision;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Respawn")
+	float RespawnTime = 5.f;
+	
+	void ItemWasTaken();
+	void RespawnItem();
+	
 };

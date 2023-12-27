@@ -11,11 +11,11 @@ ABasePickupItem::ABasePickupItem()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	Collision = CreateDefaultSubobject<USphereComponent>(TEXT("Collision"));
-	SetRootComponent(Collision);
-	Collision->SetSphereRadius(50.f);
-	Collision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	Collision->SetCollisionResponseToAllChannels(ECR_Overlap);
+	SphereCollision = CreateDefaultSubobject<USphereComponent>(TEXT("Collision"));
+	SetRootComponent(SphereCollision);
+	SphereCollision->SetSphereRadius(50.f);
+	SphereCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	SphereCollision->SetCollisionResponseToAllChannels(ECR_Overlap);
 }
 
 // Called when the game starts or when spawned
@@ -28,13 +28,35 @@ void ABasePickupItem::BeginPlay()
 void ABasePickupItem::NotifyActorBeginOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorBeginOverlap(OtherActor);
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, "Pickup");
-	Destroy();
+	APawn* Pawn = Cast<APawn>(OtherActor);
+	if(PickUpItem(Pawn))
+	{
+		ItemWasTaken();
+		FTimerHandle RespawnTimer;
+		GetWorldTimerManager().SetTimer(RespawnTimer, this, &ABasePickupItem::RespawnItem, RespawnTime);
+	}
 }
 
 // Called every frame
 void ABasePickupItem::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
+
+void ABasePickupItem::ItemWasTaken()
+{
+	SphereCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	RootComponent->SetVisibility(false, true);
+}
+
+void ABasePickupItem::RespawnItem()
+{
+	SphereCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	RootComponent->SetVisibility(true, true);
+}
+
+bool ABasePickupItem::PickUpItem(APawn* Pawn)
+{
+	return false;
 }
 
