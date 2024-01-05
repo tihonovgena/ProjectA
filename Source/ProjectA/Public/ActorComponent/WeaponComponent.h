@@ -7,6 +7,7 @@
 #include "Weapon/WeaponConfig/Enum/WeaponType.h"
 #include "WeaponComponent.generated.h"
 
+enum class EAmmoType : uint8;
 struct FWeaponAmmo;
 class IWeaponComponentInterface;
 class UBaseWeaponConfig;
@@ -27,6 +28,7 @@ public:
 	AController* GetOwnerController() const;
 	bool GetWeaponAmmo(FWeaponAmmo& WeaponAmmo) const;
 	bool GetWeaponDefaultAmmo(FWeaponAmmo& WeaponAmmo) const;
+	bool TryAddWeaponClips(EAmmoType AmmoType, int32 Clips);
 	EWeaponType GetEquipWeaponType() const;
 	EWeaponType GetWeaponType() const;
 

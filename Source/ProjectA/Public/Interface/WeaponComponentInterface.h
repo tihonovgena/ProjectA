@@ -6,6 +6,7 @@
 #include "UObject/Interface.h"
 #include "WeaponComponentInterface.generated.h"
 
+enum class EAmmoType : uint8;
 struct FWeaponAmmo;
 // This class does not need to be modified.
 UINTERFACE()
@@ -24,4 +25,5 @@ public:
 	virtual bool CanContinueAttack();
 	virtual bool GetWeaponAmmo(FWeaponAmmo& WeaponAmmo);
 	virtual bool GetWeaponDefaultAmmo(FWeaponAmmo& WeaponAmmo);
+	virtual bool TryAddWeaponClips(EAmmoType AmmoType, int32 Clips);
 };

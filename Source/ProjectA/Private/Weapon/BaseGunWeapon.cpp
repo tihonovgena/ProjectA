@@ -82,6 +82,13 @@ bool ABaseGunWeapon::AreClipsInfinity() const
 	return WeaponAmmoStruct.bInfinityClips;
 }
 
+bool ABaseGunWeapon::IsFullClips() const
+{
+	FWeaponAmmo DefaultAmmo;
+	GetWeaponDefaultAmmo(DefaultAmmo);
+	return WeaponAmmoStruct.Clips == DefaultAmmo.Clips;
+}
+
 bool ABaseGunWeapon::CanBeReloaded()
 {
 	return HasClips();
@@ -107,6 +114,22 @@ void ABaseGunWeapon::StartAttack()
 void ABaseGunWeapon::StopAttack()
 {
 	GetWorldTimerManager().ClearTimer(ShootTimer);
+}
+
+bool ABaseGunWeapon::TryAddClips(int32 Clips)
+{
+	if (IsFullClips() || AreClipsInfinity()) return false;
+
+	FWeaponAmmo DefaultAmmo;
+	GetWeaponDefaultAmmo(DefaultAmmo);
+	WeaponAmmoStruct.Clips = FMath::Clamp(WeaponAmmoStruct.Clips + Clips, WeaponAmmoStruct.Clips, DefaultAmmo.Clips);
+	return true;
+	
+}
+
+EAmmoType ABaseGunWeapon::GetWeaponAmmoType() const
+{
+	return GetGunWeaponConfig()->AmmoType;
 }
 
 void ABaseGunWeapon::Shot()

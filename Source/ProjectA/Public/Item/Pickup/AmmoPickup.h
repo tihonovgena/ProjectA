@@ -6,6 +6,8 @@
 #include "Item/BasePickupItem.h"
 #include "AmmoPickup.generated.h"
 
+enum class EAmmoType : uint8;
+
 UCLASS()
 class PROJECTA_API AAmmoPickup : public ABasePickupItem
 {
@@ -19,6 +21,12 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	virtual bool PickUpItem(APawn* Pawn) override;
+
+	UPROPERTY(EditAnywhere, Category = "AmmpoPickup")
+	EAmmoType AmmoType;
+
+	UPROPERTY(EditAnywhere, Category = "AmmpoPickup", meta = (ClampMin = "1"))
+	int32 Clips;
 
 public:
 	// Called every frame

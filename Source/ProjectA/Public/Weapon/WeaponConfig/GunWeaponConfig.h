@@ -7,6 +7,8 @@
 #include "Weapon/WeaponConfig/BaseWeaponConfig.h"
 #include "GunWeaponConfig.generated.h"
 
+enum class EAmmoType : uint8;
+
 UCLASS(Abstract)
 class PROJECTA_API UGunWeaponConfig : public UBaseWeaponConfig
 {
@@ -24,4 +26,8 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "WeaponAmmo")
 	FWeaponAmmo DefaultWeaponAmmo;
+
+	UPROPERTY(EditDefaultsOnly, Category = "WeaponAmmo")
+	EAmmoType AmmoType;
+	
 };

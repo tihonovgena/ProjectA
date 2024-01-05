@@ -30,11 +30,14 @@ public:
 	bool GetWeaponDefaultAmmo(FWeaponAmmo& DefaultWeaponAmmo) const;
 	virtual void ReloadWeapon() override;
 	virtual bool CanBeReloaded() override;
+	virtual bool TryAddClips(int32 Clips) override;
+	virtual EAmmoType GetWeaponAmmoType() const override;
 	
 protected:
 	bool HasAmmo() const;
 	bool HasClips() const;
 	bool AreClipsInfinity() const;
+	bool IsFullClips() const;
 
 private:
 	void SetupWeaponAmmo();

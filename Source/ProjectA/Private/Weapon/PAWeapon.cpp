@@ -2,6 +2,7 @@
 
 #include "Weapon/PAWeapon.h"
 #include "Weapon/WeaponConfig/BaseWeaponConfig.h"
+#include "Weapon/WeaponConfig/Enum/AmmoType.h"
 
 
 void APAWeapon::StartAttack()
@@ -23,6 +24,11 @@ bool APAWeapon::CanBeReloaded()
 	return false;
 }
 
+bool APAWeapon::TryAddClips(int32 Clips)
+{
+	return false;
+}
+
 UBaseWeaponConfig* APAWeapon::GetWeaponConfig() const
 {
 	return WeaponConfig;
@@ -35,6 +41,11 @@ EWeaponType APAWeapon::GetWeaponType()
 		return WeaponConfig->WeaponType;
 	}
 	return EWeaponType::None;
+}
+
+EAmmoType APAWeapon::GetWeaponAmmoType() const
+{
+	return EAmmoType::None;
 }
 
 void APAWeapon::AttachWeaponToArmedSocket(USceneComponent* OwnerComponent)

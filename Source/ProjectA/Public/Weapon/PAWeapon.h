@@ -7,6 +7,7 @@
 #include "WeaponConfig/Enum/WeaponType.h"
 #include "PAWeapon.generated.h"
 
+enum class EAmmoType : uint8;
 class UBaseWeaponAction;
 class UBaseWeaponConfig;
 
@@ -22,11 +23,13 @@ public:
 	virtual void StopAttack();
 	virtual void ReloadWeapon();
 	virtual bool CanBeReloaded();
+	virtual bool TryAddClips(int32 Clips);
 	
 	void AttachWeaponToArmedSocket(USceneComponent* OwnerComponent);
 	
 	UBaseWeaponConfig* GetWeaponConfig() const;
 	EWeaponType GetWeaponType();
+	virtual EAmmoType GetWeaponAmmoType() const;
 
 	FOnNeedReloadSignature NeedReload;
 

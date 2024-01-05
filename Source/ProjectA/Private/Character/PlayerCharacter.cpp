@@ -162,6 +162,12 @@ bool APlayerCharacter::GetWeaponDefaultAmmo(FWeaponAmmo& WeaponAmmo)
 	return WeaponComponent->GetWeaponDefaultAmmo(WeaponAmmo);
 }
 
+bool APlayerCharacter::TryAddWeaponClips(EAmmoType WeaponType, int32 Clips)
+{
+	
+	return WeaponComponent->TryAddWeaponClips(WeaponType, Clips);
+}
+
 UWeaponComponent* APlayerCharacter::GetWeaponComponent()
 {
 	return WeaponComponent;

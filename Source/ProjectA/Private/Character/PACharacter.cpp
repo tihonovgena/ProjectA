@@ -43,6 +43,11 @@ float APACharacter::GetHealthPercent()
 	return HealthComponent->GetHealthPercent();
 }
 
+bool APACharacter::IsDead()
+{
+	return HealthComponent->IsDead();
+}
+
 UActionMontageComponent* APACharacter::GetActionMontageComponent()
 {
 	return ActionMontageComponent;

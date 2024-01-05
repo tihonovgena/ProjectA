@@ -18,4 +18,5 @@ class PROJECTA_API IHealthComponentInterface
 
 public:
 	virtual float GetHealthPercent();
+	virtual bool IsDead();
 };

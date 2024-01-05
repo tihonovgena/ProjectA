@@ -50,6 +50,19 @@ bool UWeaponComponent::GetWeaponDefaultAmmo(FWeaponAmmo& WeaponAmmo) const
 	return false;
 }
 
+bool UWeaponComponent::TryAddWeaponClips(EAmmoType AmmoType, int32 Clips)
+{
+	for (auto Weapon : Weapons)
+	{
+		if (Weapon->GetWeaponAmmoType() == AmmoType)
+		{
+			return Weapon->TryAddClips(Clips);
+		}
+	}
+
+	return false;
+}
+
 EWeaponType UWeaponComponent::GetEquipWeaponType() const
 {
 	if (Weapons.IsEmpty() || !Weapons[GetNextWeaponIndex()]) return EWeaponType::None;

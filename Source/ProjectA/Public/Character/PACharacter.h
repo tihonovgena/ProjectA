@@ -43,6 +43,7 @@ protected:
 	virtual void OnDeath();
 	virtual void OnHealthChanged(float Health);
 	virtual float GetHealthPercent() override;
+	virtual bool IsDead() override;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Health", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UHealthComponent> HealthComponent;

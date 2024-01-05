@@ -113,6 +113,7 @@ public:
 	virtual bool CanContinueAttack() override;
 	virtual bool GetWeaponAmmo(FWeaponAmmo& WeaponAmmo) override;
 	virtual bool GetWeaponDefaultAmmo(FWeaponAmmo& WeaponAmmo) override;
+	virtual bool TryAddWeaponClips(EAmmoType WeaponType, int32 Clips) override;
 	UWeaponComponent* GetWeaponComponent();
 	
 private:
